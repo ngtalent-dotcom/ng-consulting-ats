@@ -1,0 +1,49 @@
+{
+  "version": "0.2",
+  "language": "es",
+  "dictionaries": ["es_ES"],
+  "dictionaryDefinitions": [
+    {
+      "name": "es_ES",
+      "path": "./node_modules/@cspell/dict-es-es/cspell-ext.json"
+    }
+  ],
+  "files": ["src/**/*.{jsx,js}"],
+  "ignorePaths": ["node_modules", "dist"],
+  "ignoreRegExpList": [
+    "https?://[^\\s'\"]+",
+    "#[0-9a-fA-F]{3,8}",
+    "\\$\\{[^}]+\\}",
+    "[a-z]+[A-Z][a-zA-Z]*"
+  ],
+  "words": [
+    "Supabase", "supabase", "Vite", "vacante", "vacantes", "postulacion",
+    "ATS", "NGC", "ngtalent", "ngtalentconsulting",
+    "OCC", "Indeed", "LinkedIn", "linkedin",
+    "Coppel", "Didiamant", "Ternium",
+    "cvFile", "cvUrl", "aceptaTerminos",
+    "whiteSpace", "preWrap", "flexShrink", "maxWidth", "minWidth",
+    "borderRadius", "borderTop", "backgroundColor", "fontWeight", "fontSize",
+    "paddingTop", "paddingBottom", "marginBottom", "marginTop",
+    "gridTemplateColumns", "alignItems", "justifyContent", "flexDirection",
+    "useNavigate", "useParams", "useEffect", "useState",
+    "setEnviando", "setEnviado", "setErrors", "setForm", "setVacante",
+    "setCargando", "setCliente", "setErrorServidor",
+    "createCandidato", "uploadCV", "getVacanteById", "getVacantesPublicas",
+    "candidato", "candidatos", "candidatura",
+    "vacantesPublicas", "vacanteId",
+    "CareersApply", "CareersDetail", "CareersList", "CareersLayout",
+    "Practicante", "Gerencial", "Hibrido",
+    "reclutamiento", "noreste",
+    "NL", "mx",
+    "onclick", "onSubmit", "onChange", "onBlur",
+    "textarea", "checkbox",
+    "middot", "larr",
+    "fef2f2", "fca5a5", "dc2626", "d1fae5", "f0fdf4", "dbeafe",
+    "f1f5f9", "e2e8f0", "cbd5e1", "f5f3ff",
+    "fff5f5", "fff7ed", "ecfdf5",
+    "93c5fd", "2563eb", "1e40af", "1e293b", "334155", "475569",
+    "64748b", "94a3b8", "475569", "059669", "065f46", "10b981",
+    "briefcase"
+  ]
+}
