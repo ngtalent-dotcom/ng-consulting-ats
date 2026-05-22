@@ -128,7 +128,7 @@ export default function Vacantes() {
                 className="vacante-card"
                 onClick={() => navigate('/vacantes/' + v.id + '/pipeline')}
               >
-                <div className="vacante-card-title">{v.título}</div>
+                <div className="vacante-card-title">{v.titulo}</div>
                 <div className="vacante-card-meta">
                   <span className="tag">{v.area}</span>
                   <span className="tag">{v.nivel}</span>

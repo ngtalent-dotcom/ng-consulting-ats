@@ -15,7 +15,7 @@ export default function CareersApply() {
   const [cargando, setCargando] = useState(true)
 
   const [form, setForm] = useState({
-    nombre: '', apellido: '', email: '', teléfono: '',
+    nombre: '', apellido: '', email: '', telefono: '',
     ciudad: '', fuente: '', linkedin: '', mensaje: '',
     cvFile: null,
     aceptaTerminos: false,
@@ -68,7 +68,7 @@ export default function CareersApply() {
     if (!form.nombre.trim()) e.nombre = 'Requerido'
     if (!form.apellido.trim()) e.apellido = 'Requerido'
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Correo inválido'
-    if (!form.teléfono.trim()) e.teléfono = 'Requerido'
+    if (!form.telefono.trim()) e.telefono = 'Requerido'
     if (!form.fuente) e.fuente = 'Requerido'
     if (!form.cvFile) e.cvFile = 'Por favor adjunta tu CV'
     if (!form.aceptaTerminos) e.aceptaTerminos = 'Debes aceptar para continuar'
@@ -109,7 +109,7 @@ export default function CareersApply() {
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
         email: form.email.trim().toLowerCase(),
-        teléfono: form.teléfono.trim(),
+        telefono: form.telefono.trim(),
         ciudad: form.ciudad.trim() || null,
         fuente: form.fuente,
         linkedin: form.linkedin.trim() || null,
@@ -243,8 +243,8 @@ export default function CareersApply() {
             <Field label="Teléfono *" error={errors.telefono}>
               <input
                 type="tel" placeholder="81 1234 5678"
-                value={form.teléfono}
-                onChange={e => handleChange('teléfono', e.target.value)}
+                value={form.telefono}
+                onChange={e => handleChange('telefono', e.target.value)}
                 style={inputStyle(errors.telefono)}
               />
             </Field>

@@ -262,9 +262,9 @@ export default function Pipeline() {
               {cliente?.nombre}
             </button>
             <span className="breadcrumb-sep">/</span>
-            <span className="current">{vacante.título}</span>
+            <span className="current">{vacante.titulo}</span>
           </div>
-          <div className="page-title">Pipeline &middot; {vacante.título}</div>
+          <div className="page-title">Pipeline &middot; {vacante.titulo}</div>
         </div>
         <div className="header-actions">
           <div className="toggle-group">

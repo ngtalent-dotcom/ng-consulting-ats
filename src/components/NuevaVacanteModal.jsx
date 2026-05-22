@@ -6,14 +6,14 @@ const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador'
 const modalidades = ['Presencial', 'Hibrido', 'Remoto']
 
 const vacioForm = {
-  título: '',
+  titulo: '',
   area: '',
   nivel: '',
   modalidad: '',
   ciudad: 'Monterrey, NL',
   salarioMin: '',
   salarioMax: '',
-  descripción: '',
+  descripcion: '',
   requisitos: '',
   publicada: true,
 }
@@ -32,7 +32,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
 
   const validate = () => {
     const e = {}
-    if (!form.título.trim()) e.título = 'Requerido'
+    if (!form.titulo.trim()) e.titulo = 'Requerido'
     if (!form.area) e.area = 'Requerido'
     if (!form.nivel) e.nivel = 'Requerido'
     if (!form.modalidad) e.modalidad = 'Requerido'
@@ -51,14 +51,14 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
     try {
       const nuevaVacante = await createVacante({
         cliente_id: clienteId,
-        título: form.título.trim(),
+        titulo: form.titulo.trim(),
         area: form.area,
         nivel: form.nivel,
         modalidad: form.modalidad,
         ciudad: form.ciudad.trim(),
         salario_min: form.salarioMin ? Number(form.salarioMin) : null,
         salario_max: form.salarioMax ? Number(form.salarioMax) : null,
-        descripción: form.descripción.trim() || null,
+        descripcion: form.descripcion.trim() || null,
         requisitos: form.requisitos.trim() || null,
         publicada: form.publicada,
         estatus: 'Activa',
@@ -83,7 +83,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
           <div style={{ fontSize: 48, marginBottom: 16 }}>&#9989;</div>
           <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>¡Vacante creada!</h2>
           <p style={{ fontSize: 14, color: '#64748b', marginBottom: 4 }}>
-            <strong>{form.título}</strong> fue registrada para {clienteNombre}.
+            <strong>{form.titulo}</strong> fue registrada para {clienteNombre}.
           </p>
           {form.publicada && (
             <p style={{ fontSize: 13, color: '#2563eb', marginTop: 8 }}>
@@ -117,11 +117,11 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 
           {/* Título */}
-          <Field label="Título del puesto *" error={errors.título}>
+          <Field label="Título del puesto *" error={errors.titulo}>
             <input
               type="text" placeholder="Ej. Ejecutivo de Ventas"
-              value={form.título} onChange={e => set('título', e.target.value)}
-              style={inp(errors.título)}
+              value={form.titulo} onChange={e => set('titulo', e.target.value)}
+              style={inp(errors.titulo)}
             />
           </Field>
 
@@ -204,7 +204,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
           <Field label="Descripción del puesto">
             <textarea
               placeholder="Describe brevemente el rol, responsabilidades principales y lo que ofrece la empresa..."
-              value={form.descripción} onChange={e => set('descripción', e.target.value)}
+              value={form.descripcion} onChange={e => set('descripcion', e.target.value)}
               rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
             />
           </Field>

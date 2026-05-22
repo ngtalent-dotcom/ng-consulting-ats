@@ -26,7 +26,7 @@ export default function Dashboard() {
         // Cargar candidatos recientes
         const { data: cands } = await supabase
           .from('candidatos')
-          .select('*, vacantes(título, clientes(nombre))')
+          .select('*, vacantes(titulo, clientes(nombre))')
           .order('created_at', { ascending: false })
           .limit(6)
 
@@ -197,7 +197,7 @@ export default function Dashboard() {
                           {c.nombre} {c.apellido || ''}
                         </div>
                         <div style={{ fontSize: 11.5, color: 'var(--gray-400)' }}>
-                          {vacante.título || '—'} &middot; {clienteNombre}
+                          {vacante.titulo || '—'} &middot; {clienteNombre}
                         </div>
                       </div>
                       <span className="badge" style={{ background: estilo.bg, color: estilo.color, fontSize: 11 }}>

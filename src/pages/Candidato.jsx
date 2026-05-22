@@ -88,7 +88,7 @@ export default function Candidato() {
             </button>
             <span className="breadcrumb-sep">/</span>
             <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/vacantes/' + (candidato.vacante_id || '') + '/pipeline')}>
-              {vacante.título || 'Pipeline'}
+              {vacante.titulo || 'Pipeline'}
             </button>
             <span className="breadcrumb-sep">/</span>
             <span className="current">{candidato.nombre}</span>
@@ -147,7 +147,7 @@ export default function Candidato() {
                 </div>
                 <div className="info-item">
                   <div className="info-label">Teléfono</div>
-                  <div className="info-value">{candidato.teléfono || '—'}</div>
+                  <div className="info-value">{candidato.telefono || '—'}</div>
                 </div>
                 {candidato.ciudad && (
                   <div className="info-item">
@@ -200,7 +200,7 @@ export default function Candidato() {
               <div className="info-row">
                 <div className="info-item">
                   <div className="info-label">Puesto</div>
-                  <div className="info-value">{vacante.título || '—'}</div>
+                  <div className="info-value">{vacante.titulo || '—'}</div>
                 </div>
                 <div className="info-item">
                   <div className="info-label">Cliente</div>
