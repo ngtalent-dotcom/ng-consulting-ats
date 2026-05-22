@@ -1,0 +1,68 @@
+import { supabase } from '../lib/supabase'
+
+// Obtener todas las vacantes (con datos del cliente)
+export async function getVacantes() {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .select('*, clientes(id, nombre, industria)')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Obtener vacantes por cliente
+export async function getVacantesByCliente(clienteId) {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .select('*, clientes(id, nombre)')
+    .eq('cliente_id', clienteId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Obtener vacante por ID (con datos del cliente)
+export async function getVacanteById(id) {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .select('*, clientes(id, nombre, industria)')
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}
+
+// Obtener vacantes públicas (publicada = true, estatus = Activa)
+export async function getVacantesPublicas() {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .select('*, clientes(id, nombre)')
+    .eq('publicada', true)
+    .eq('estatus', 'Activa')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Crear vacante
+export async function createVacante(vacante) {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .insert([vacante])
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+// Actualizar vacante
+export async function updateVacante(id, campos) {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .update(campos)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
