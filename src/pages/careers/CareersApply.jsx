@@ -359,7 +359,7 @@ export default function CareersApply() {
           </button>
 
           <p style={{ fontSize: 12, color: '#94a3b8', textAlign: 'center' }}>
-            Tu información es confidencial y solo sera usada para este proceso de selección.
+            Tu información es confidencial y solo será usada para este proceso de selección.
           </p>
         </form>
       </div>
