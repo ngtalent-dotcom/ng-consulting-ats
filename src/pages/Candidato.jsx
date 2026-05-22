@@ -166,7 +166,7 @@ export default function Candidato() {
                   <div className="info-value">{formatFecha(candidato.created_at)}</div>
                 </div>
                 <div className="info-item">
-                  <div className="info-label">Decision</div>
+                  <div className="info-label">Decisión</div>
                   <div className="info-value" style={{ color: decisionColor, fontWeight: 700 }}>
                     {candidato.decision || 'Pendiente'}
                   </div>
@@ -322,7 +322,7 @@ export default function Candidato() {
                 </button>
               </div>
               <div style={{ marginTop: 10, fontSize: 11.5, color: 'var(--gray-400)' }}>
-                Estas funciones estaran disponibles en próximas fases.
+                Estas funciones estarán disponibles en próximas fases.
               </div>
             </div>
           </div>

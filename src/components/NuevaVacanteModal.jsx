@@ -70,7 +70,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
       setTimeout(() => onClose(), 1800)
     } catch (err) {
       console.error('Error al crear vacante:', err)
-      setErrorServidor('Ocurrio un error al guardar la vacante. Intentalo de nuevo.')
+      setErrorServidor('Ocurrió un error al guardar la vacante. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -127,15 +127,15 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
 
           {/* Area y Nivel */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <Field label="Area *" error={errors.area}>
+            <Field label="Área *" error={errors.area}>
               <select value={form.area} onChange={e => set('area', e.target.value)} style={inp(errors.area, !form.area)}>
-                <option value="">Selecciónar</option>
+                <option value="">Seleccionar</option>
                 {areas.map(a => <option key={a}>{a}</option>)}
               </select>
             </Field>
             <Field label="Nivel *" error={errors.nivel}>
               <select value={form.nivel} onChange={e => set('nivel', e.target.value)} style={inp(errors.nivel, !form.nivel)}>
-                <option value="">Selecciónar</option>
+                <option value="">Seleccionar</option>
                 {niveles.map(n => <option key={n}>{n}</option>)}
               </select>
             </Field>
@@ -212,7 +212,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
           {/* Requisitos */}
           <Field label="Requisitos del candidato">
             <textarea
-              placeholder="Experiencia, estudios, habilidades tecnicas, etc."
+              placeholder="Experiencia, estudios, habilidades técnicas, etc."
               value={form.requisitos} onChange={e => set('requisitos', e.target.value)}
               rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
             />
@@ -231,8 +231,8 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
               </div>
               <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
                 {form.publicada
-                  ? 'La vacante sera visible en el portal publico'
-                  : 'La vacante solo sera visible internamente en el ATS'}
+                  ? 'La vacante será visible en el portal público'
+                  : 'La vacante solo será visible internamente en el ATS'}
               </div>
             </div>
             <button

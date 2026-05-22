@@ -117,7 +117,7 @@ export default function Vacantes() {
           <div className="card">
             <div className="empty-state">
               <div className="icon">&#128203;</div>
-              <p>No hay vacantes para este cliente. Crea la primera con el boton de arriba.</p>
+              <p>No hay vacantes para este cliente. Crea la primera con el botón de arriba.</p>
             </div>
           </div>
         ) : (

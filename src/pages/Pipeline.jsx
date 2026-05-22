@@ -166,7 +166,7 @@ export default function Pipeline() {
               <th>Fuente</th>
               <th>Etapa</th>
               <th>Score</th>
-              <th>Decision</th>
+              <th>Decisión</th>
               <th>Fecha</th>
               <th></th>
             </tr>
@@ -332,7 +332,7 @@ export default function Pipeline() {
               <div className="icon">&#128100;</div>
               <p>No hay candidatos en este pipeline aún.</p>
               <p style={{ fontSize: 13, color: '#94a3b8' }}>
-                Los candidatos apareceran aqui cuando apliquen desde el portal.
+                Los candidatos aparecerán aquí cuando apliquen desde el portal.
               </p>
             </div>
           </div>

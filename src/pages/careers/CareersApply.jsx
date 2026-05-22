@@ -121,7 +121,7 @@ export default function CareersApply() {
       setEnviado(true)
     } catch (err) {
       console.error('Error al enviar aplicación:', err)
-      setErrorServidor('Ocurrio un error al enviar tu aplicación. Por favor intentalo de nuevo.')
+      setErrorServidor('Ocurrió un error al enviar tu aplicación. Por favor inténtalo de nuevo.')
     } finally {
       setEnviando(false)
     }
@@ -148,7 +148,7 @@ export default function CareersApply() {
             <strong>{vacante.titulo}</strong>.
           </p>
           <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 32 }}>
-            Nuestro equipo revisara tu perfil y se pondra en contacto contigo a la brevedad al correo{' '}
+            Nuestro equipo revisará tu perfil y se pondrá en contacto contigo a la brevedad al correo{' '}
             <strong>{form.email}</strong>.
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
