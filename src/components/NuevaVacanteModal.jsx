@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { createVacante } from '../services/vacantesService'
 
-const areas = ['Ventas', 'Operaciones', 'Finanzas', 'Recursos Humanos', 'Ingenieria', 'Marketing', 'Tecnologia', 'Administracion', 'Legal', 'Otro']
-const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador', 'Gerencial', 'Direccion']
+const areas = ['Ventas', 'Operaciones', 'Finanzas', 'Recursos Humanos', 'Ingeniería', 'Marketing', 'Tecnología', 'Administración', 'Legal', 'Otro']
+const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador', 'Gerencial', 'Dirección']
 const modalidades = ['Presencial', 'Hibrido', 'Remoto']
 
 const vacioForm = {
-  titulo: '',
+  título: '',
   area: '',
   nivel: '',
   modalidad: '',
   ciudad: 'Monterrey, NL',
   salarioMin: '',
   salarioMax: '',
-  descripcion: '',
+  descripción: '',
   requisitos: '',
   publicada: true,
 }
@@ -32,7 +32,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
 
   const validate = () => {
     const e = {}
-    if (!form.titulo.trim()) e.titulo = 'Requerido'
+    if (!form.título.trim()) e.título = 'Requerido'
     if (!form.area) e.area = 'Requerido'
     if (!form.nivel) e.nivel = 'Requerido'
     if (!form.modalidad) e.modalidad = 'Requerido'
@@ -51,14 +51,14 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
     try {
       const nuevaVacante = await createVacante({
         cliente_id: clienteId,
-        titulo: form.titulo.trim(),
+        título: form.título.trim(),
         area: form.area,
         nivel: form.nivel,
         modalidad: form.modalidad,
         ciudad: form.ciudad.trim(),
         salario_min: form.salarioMin ? Number(form.salarioMin) : null,
         salario_max: form.salarioMax ? Number(form.salarioMax) : null,
-        descripcion: form.descripcion.trim() || null,
+        descripción: form.descripción.trim() || null,
         requisitos: form.requisitos.trim() || null,
         publicada: form.publicada,
         estatus: 'Activa',
@@ -81,9 +81,9 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
       <Overlay onClick={onClose}>
         <ModalBox onClick={e => e.stopPropagation()} style={{ maxWidth: 420, textAlign: 'center', padding: '48px 32px' }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>&#9989;</div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>Vacante creada!</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 8 }}>¡Vacante creada!</h2>
           <p style={{ fontSize: 14, color: '#64748b', marginBottom: 4 }}>
-            <strong>{form.titulo}</strong> fue registrada para {clienteNombre}.
+            <strong>{form.título}</strong> fue registrada para {clienteNombre}.
           </p>
           {form.publicada && (
             <p style={{ fontSize: 13, color: '#2563eb', marginTop: 8 }}>
@@ -116,12 +116,12 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 
-          {/* Titulo */}
-          <Field label="Titulo del puesto *" error={errors.titulo}>
+          {/* Título */}
+          <Field label="Título del puesto *" error={errors.título}>
             <input
               type="text" placeholder="Ej. Ejecutivo de Ventas"
-              value={form.titulo} onChange={e => set('titulo', e.target.value)}
-              style={inp(errors.titulo)}
+              value={form.título} onChange={e => set('título', e.target.value)}
+              style={inp(errors.título)}
             />
           </Field>
 
@@ -129,13 +129,13 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <Field label="Area *" error={errors.area}>
               <select value={form.area} onChange={e => set('area', e.target.value)} style={inp(errors.area, !form.area)}>
-                <option value="">Seleccionar</option>
+                <option value="">Selecciónar</option>
                 {areas.map(a => <option key={a}>{a}</option>)}
               </select>
             </Field>
             <Field label="Nivel *" error={errors.nivel}>
               <select value={form.nivel} onChange={e => set('nivel', e.target.value)} style={inp(errors.nivel, !form.nivel)}>
-                <option value="">Seleccionar</option>
+                <option value="">Selecciónar</option>
                 {niveles.map(n => <option key={n}>{n}</option>)}
               </select>
             </Field>
@@ -182,7 +182,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <div>
-                <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Minimo (MXN)</div>
+                <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Mínimo (MXN)</div>
                 <input
                   type="number" placeholder="25000"
                   value={form.salarioMin} onChange={e => set('salarioMin', e.target.value)}
@@ -190,7 +190,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
                 />
               </div>
               <div>
-                <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Maximo (MXN)</div>
+                <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Máximo (MXN)</div>
                 <input
                   type="number" placeholder="35000"
                   value={form.salarioMax} onChange={e => set('salarioMax', e.target.value)}
@@ -200,11 +200,11 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
             </div>
           </div>
 
-          {/* Descripcion */}
-          <Field label="Descripcion del puesto">
+          {/* Descripción */}
+          <Field label="Descripción del puesto">
             <textarea
               placeholder="Describe brevemente el rol, responsabilidades principales y lo que ofrece la empresa..."
-              value={form.descripcion} onChange={e => set('descripcion', e.target.value)}
+              value={form.descripción} onChange={e => set('descripción', e.target.value)}
               rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
             />
           </Field>

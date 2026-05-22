@@ -26,7 +26,7 @@ export default function Dashboard() {
         // Cargar candidatos recientes
         const { data: cands } = await supabase
           .from('candidatos')
-          .select('*, vacantes(titulo, clientes(nombre))')
+          .select('*, vacantes(título, clientes(nombre))')
           .order('created_at', { ascending: false })
           .limit(6)
 
@@ -56,7 +56,7 @@ export default function Dashboard() {
   }, [])
 
   const etapaColor = {
-    'Aplico':             { bg: '#ede9fe', color: '#6d28d9' },
+    'Aplicó':             { bg: '#ede9fe', color: '#6d28d9' },
     'Pre-screen':         { bg: '#fef3c7', color: '#92400e' },
     'Entrevista Cliente': { bg: '#dbeafe', color: '#1e40af' },
     'Oferta':             { bg: '#d1fae5', color: '#065f46' },
@@ -156,7 +156,7 @@ export default function Dashboard() {
                     {clientes.length === 0 && (
                       <tr>
                         <td colSpan={2} style={{ color: '#94a3b8', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
-                          Sin clientes aun
+                          Sin clientes aún
                         </td>
                       </tr>
                     )}
@@ -197,7 +197,7 @@ export default function Dashboard() {
                           {c.nombre} {c.apellido || ''}
                         </div>
                         <div style={{ fontSize: 11.5, color: 'var(--gray-400)' }}>
-                          {vacante.titulo || '—'} &middot; {clienteNombre}
+                          {vacante.título || '—'} &middot; {clienteNombre}
                         </div>
                       </div>
                       <span className="badge" style={{ background: estilo.bg, color: estilo.color, fontSize: 11 }}>

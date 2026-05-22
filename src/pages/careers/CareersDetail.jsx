@@ -52,17 +52,17 @@ export default function CareersDetail() {
 
   const cliente = vacante.clientes || {}
 
-  // Descripcion del puesto — usa campos de BD si existen, sino genera texto base
+  // Descripción del puesto — usa campos de BD si existen, sino genera texto base
   const resumen = vacante.descripcion ||
-    'Estamos en busqueda de un/a ' + vacante.titulo + ' para integrarse al equipo de ' + (cliente.nombre || 'la empresa') + '. Esta posicion representa una excelente oportunidad de desarrollo profesional en ' + vacante.ciudad + '.'
+    'Estamos en búsqueda de un/a ' + vacante.titulo + ' para integrarse al equipo de ' + (cliente.nombre || 'la empresa') + '. Esta posición representa una excelente oportunidad de desarrollo profesional en ' + vacante.ciudad + '.'
 
   const requisitosTexto = vacante.requisitos ||
-    'Experiencia previa en el area de ' + vacante.area + ', nivel ' + vacante.nivel + '. Disponibilidad para modalidad ' + vacante.modalidad + ' en ' + vacante.ciudad + '.'
+    'Experiencia previa en el área de ' + vacante.area + ', nivel ' + vacante.nivel + '. Disponibilidad para modalidad ' + vacante.modalidad + ' en ' + vacante.ciudad + '.'
 
   const ofrecemos = [
     'Sueldo competitivo y acorde a tu experiencia.',
     'Prestaciones de ley + beneficios adicionales.',
-    'Ambiente de trabajo dinamico y colaborativo.',
+    'Ambiente de trabajo dinámico y colaborativo.',
     'Oportunidad real de crecimiento y desarrollo profesional.',
   ]
 
@@ -127,7 +127,7 @@ export default function CareersDetail() {
           </div>
 
           {/* Resumen */}
-          <Section title="Sobre la posicion">
+          <Section title="Sobre la posición">
             <p style={{ color: '#475569', lineHeight: 1.7, fontSize: 14, whiteSpace: 'pre-line' }}>
               {resumen}
             </p>
@@ -176,13 +176,13 @@ export default function CareersDetail() {
             </button>
 
             <div style={{ fontSize: 11.5, color: '#94a3b8', textAlign: 'center', marginBottom: 20 }}>
-              El proceso es rapido y confidencial.
+              El proceso es rápido y confidencial.
             </div>
 
             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { label: 'Empresa',    value: cliente.nombre || '—' },
-                { label: 'Ubicacion',  value: vacante.ciudad || '—' },
+                { label: 'Ubicación',  value: vacante.ciudad || '—' },
                 { label: 'Modalidad',  value: vacante.modalidad || '—' },
                 { label: 'Nivel',      value: vacante.nivel || '—' },
               ].map((item, i) => (

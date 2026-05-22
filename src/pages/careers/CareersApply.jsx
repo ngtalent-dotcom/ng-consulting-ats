@@ -15,7 +15,7 @@ export default function CareersApply() {
   const [cargando, setCargando] = useState(true)
 
   const [form, setForm] = useState({
-    nombre: '', apellido: '', email: '', telefono: '',
+    nombre: '', apellido: '', email: '', teléfono: '',
     ciudad: '', fuente: '', linkedin: '', mensaje: '',
     cvFile: null,
     aceptaTerminos: false,
@@ -67,8 +67,8 @@ export default function CareersApply() {
     const e = {}
     if (!form.nombre.trim()) e.nombre = 'Requerido'
     if (!form.apellido.trim()) e.apellido = 'Requerido'
-    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Correo invalido'
-    if (!form.telefono.trim()) e.telefono = 'Requerido'
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Correo inválido'
+    if (!form.teléfono.trim()) e.teléfono = 'Requerido'
     if (!form.fuente) e.fuente = 'Requerido'
     if (!form.cvFile) e.cvFile = 'Por favor adjunta tu CV'
     if (!form.aceptaTerminos) e.aceptaTerminos = 'Debes aceptar para continuar'
@@ -109,19 +109,19 @@ export default function CareersApply() {
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
         email: form.email.trim().toLowerCase(),
-        telefono: form.telefono.trim(),
+        teléfono: form.teléfono.trim(),
         ciudad: form.ciudad.trim() || null,
         fuente: form.fuente,
         linkedin: form.linkedin.trim() || null,
         mensaje: form.mensaje.trim() || null,
         cv_url: cvUrl,
-        etapa: 'Aplico',
+        etapa: 'Aplicó',
       })
 
       setEnviado(true)
     } catch (err) {
-      console.error('Error al enviar aplicacion:', err)
-      setErrorServidor('Ocurrio un error al enviar tu aplicacion. Por favor intentalo de nuevo.')
+      console.error('Error al enviar aplicación:', err)
+      setErrorServidor('Ocurrio un error al enviar tu aplicación. Por favor intentalo de nuevo.')
     } finally {
       setEnviando(false)
     }
@@ -141,10 +141,10 @@ export default function CareersApply() {
             &#10003;
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#1e293b', marginBottom: 12 }}>
-            Aplicacion enviada!
+            ¡Aplicación enviada!
           </h1>
           <p style={{ fontSize: 15, color: '#64748b', marginBottom: 8, lineHeight: 1.6 }}>
-            Gracias <strong>{form.nombre}</strong>, recibimos tu aplicacion para la vacante de{' '}
+            Gracias <strong>{form.nombre}</strong>, recibimos tu aplicación para la vacante de{' '}
             <strong>{vacante.titulo}</strong>.
           </p>
           <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 32 }}>
@@ -156,7 +156,7 @@ export default function CareersApply() {
               onClick={() => navigate('/careers')}
               style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 8, padding: '11px 22px', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
             >
-              Ver mas vacantes
+              Ver más vacantes
             </button>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function CareersApply() {
             </Field>
             <Field label="Apellido(s) *" error={errors.apellido}>
               <input
-                type="text" placeholder="Ej. Mendoza Garcia"
+                type="text" placeholder="Ej. Mendoza García"
                 value={form.apellido}
                 onChange={e => handleChange('apellido', e.target.value)}
                 style={inputStyle(errors.apellido)}
@@ -230,9 +230,9 @@ export default function CareersApply() {
             </Field>
           </div>
 
-          {/* Email y telefono */}
+          {/* Email y teléfono */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <Field label="Correo electronico *" error={errors.email}>
+            <Field label="Correo electrónico *" error={errors.email}>
               <input
                 type="email" placeholder="tu@correo.com"
                 value={form.email}
@@ -240,11 +240,11 @@ export default function CareersApply() {
                 style={inputStyle(errors.email)}
               />
             </Field>
-            <Field label="Telefono *" error={errors.telefono}>
+            <Field label="Teléfono *" error={errors.telefono}>
               <input
                 type="tel" placeholder="81 1234 5678"
-                value={form.telefono}
-                onChange={e => handleChange('telefono', e.target.value)}
+                value={form.teléfono}
+                onChange={e => handleChange('teléfono', e.target.value)}
                 style={inputStyle(errors.telefono)}
               />
             </Field>
@@ -260,13 +260,13 @@ export default function CareersApply() {
                 style={inputStyle()}
               />
             </Field>
-            <Field label="Como te enteraste de esta vacante? *" error={errors.fuente}>
+            <Field label="¿Cómo te enteraste de esta vacante? *" error={errors.fuente}>
               <select
                 value={form.fuente}
                 onChange={e => handleChange('fuente', e.target.value)}
                 style={{ ...inputStyle(errors.fuente), color: form.fuente ? '#1e293b' : '#94a3b8' }}
               >
-                <option value="">Selecciona una opcion</option>
+                <option value="">Selecciona una opción</option>
                 {fuentes.map(f => <option key={f} value={f}>{f}</option>)}
               </select>
             </Field>
@@ -313,9 +313,9 @@ export default function CareersApply() {
           </Field>
 
           {/* Mensaje */}
-          <Field label="Por que te interesa esta posicion? (opcional)">
+          <Field label="¿Por qué te interesa esta posición? (opcional)">
             <textarea
-              placeholder="Cuentanos brevemente por que eres un buen candidato para este puesto..."
+              placeholder="Cuéntanos brevemente por qué eres un buen candidato para este puesto..."
               value={form.mensaje}
               onChange={e => handleChange('mensaje', e.target.value)}
               rows={4}
@@ -333,7 +333,7 @@ export default function CareersApply() {
                 style={{ marginTop: 3, flexShrink: 0 }}
               />
               <span style={{ fontSize: 13, color: '#64748b', lineHeight: 1.5 }}>
-                Acepto que N&amp;G Talent Consulting almacene y procese mis datos personales con el unico fin de gestionar mi candidatura para este proceso de seleccion. *
+                Acepto que N&amp;G Talent Consulting almacene y procese mis datos personales con el único fin de gestionar mi candidatura para este proceso de selección. *
               </span>
             </label>
             {errors.aceptaTerminos && (
@@ -355,11 +355,11 @@ export default function CareersApply() {
               transition: 'background 0.15s',
             }}
           >
-            {enviando ? 'Enviando aplicacion...' : 'Enviar aplicacion →'}
+            {enviando ? 'Enviando aplicación...' : 'Enviar aplicación →'}
           </button>
 
           <p style={{ fontSize: 12, color: '#94a3b8', textAlign: 'center' }}>
-            Tu informacion es confidencial y solo sera usada para este proceso de seleccion.
+            Tu información es confidencial y solo sera usada para este proceso de selección.
           </p>
         </form>
       </div>

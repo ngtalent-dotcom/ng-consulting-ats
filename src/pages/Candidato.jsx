@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getCandidatoById } from '../services/candidatosService'
 
 const etapaColors = {
-  'Aplico':             '#6366f1',
+  'Aplicó':             '#6366f1',
   'Pre-screen':         '#f59e0b',
   'Entrevista Cliente': '#3b82f6',
   'Oferta':             '#8b5cf6',
@@ -71,7 +71,7 @@ export default function Candidato() {
     return new Date(dateStr).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
   }
 
-  const todasEtapas = ['Aplico', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
+  const todasEtapas = ['Aplicó', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
   const etapaActualIndex = todasEtapas.indexOf(candidato.etapa)
 
   return (
@@ -88,7 +88,7 @@ export default function Candidato() {
             </button>
             <span className="breadcrumb-sep">/</span>
             <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/vacantes/' + (candidato.vacante_id || '') + '/pipeline')}>
-              {vacante.titulo || 'Pipeline'}
+              {vacante.título || 'Pipeline'}
             </button>
             <span className="breadcrumb-sep">/</span>
             <span className="current">{candidato.nombre}</span>
@@ -146,8 +146,8 @@ export default function Candidato() {
                   <div className="info-value">{candidato.email || '—'}</div>
                 </div>
                 <div className="info-item">
-                  <div className="info-label">Telefono</div>
-                  <div className="info-value">{candidato.telefono || '—'}</div>
+                  <div className="info-label">Teléfono</div>
+                  <div className="info-value">{candidato.teléfono || '—'}</div>
                 </div>
                 {candidato.ciudad && (
                   <div className="info-item">
@@ -162,7 +162,7 @@ export default function Candidato() {
                   </div>
                 </div>
                 <div className="info-item">
-                  <div className="info-label">Fecha de aplicacion</div>
+                  <div className="info-label">Fecha de aplicación</div>
                   <div className="info-value">{formatFecha(candidato.created_at)}</div>
                 </div>
                 <div className="info-item">
@@ -200,7 +200,7 @@ export default function Candidato() {
               <div className="info-row">
                 <div className="info-item">
                   <div className="info-label">Puesto</div>
-                  <div className="info-value">{vacante.titulo || '—'}</div>
+                  <div className="info-value">{vacante.título || '—'}</div>
                 </div>
                 <div className="info-item">
                   <div className="info-label">Cliente</div>
@@ -286,7 +286,7 @@ export default function Candidato() {
                 </p>
               ) : (
                 <div style={{ color: 'var(--gray-300)', fontSize: 13, fontStyle: 'italic' }}>
-                  Sin notas aun.
+                  Sin notas aún.
                 </div>
               )}
             </div>
@@ -322,7 +322,7 @@ export default function Candidato() {
                 </button>
               </div>
               <div style={{ marginTop: 10, fontSize: 11.5, color: 'var(--gray-400)' }}>
-                Estas funciones estaran disponibles en proximas fases.
+                Estas funciones estaran disponibles en próximas fases.
               </div>
             </div>
           </div>

@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getVacanteById } from '../services/vacantesService'
 import { getCandidatosByVacante } from '../services/candidatosService'
 
-const etapasBoardOrder = ['Aplico', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
+const etapasBoardOrder = ['Aplicó', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
 
 const etapaColors = {
-  'Aplico':             '#6366f1',
+  'Aplicó':             '#6366f1',
   'Pre-screen':         '#f59e0b',
   'Entrevista Cliente': '#3b82f6',
   'Oferta':             '#8b5cf6',
@@ -262,9 +262,9 @@ export default function Pipeline() {
               {cliente?.nombre}
             </button>
             <span className="breadcrumb-sep">/</span>
-            <span className="current">{vacante.titulo}</span>
+            <span className="current">{vacante.título}</span>
           </div>
-          <div className="page-title">Pipeline &middot; {vacante.titulo}</div>
+          <div className="page-title">Pipeline &middot; {vacante.título}</div>
         </div>
         <div className="header-actions">
           <div className="toggle-group">
@@ -296,7 +296,7 @@ export default function Pipeline() {
               <div className="info-value">{cliente?.nombre || '—'}</div>
             </div>
             <div>
-              <div className="info-label">Area</div>
+              <div className="info-label">Área</div>
               <div className="info-value">{vacante.area || '—'}</div>
             </div>
             <div>
@@ -330,7 +330,7 @@ export default function Pipeline() {
           <div className="card">
             <div className="empty-state" style={{ padding: '40px 0' }}>
               <div className="icon">&#128100;</div>
-              <p>No hay candidatos en este pipeline aun.</p>
+              <p>No hay candidatos en este pipeline aún.</p>
               <p style={{ fontSize: 13, color: '#94a3b8' }}>
                 Los candidatos apareceran aqui cuando apliquen desde el portal.
               </p>

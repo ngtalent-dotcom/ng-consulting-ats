@@ -42,10 +42,10 @@ export default function CareersList() {
           {cargando ? 'Cargando...' : vacantesPublicas.length + ' vacantes disponibles'}
         </div>
         <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1e293b', marginBottom: 12, lineHeight: 1.2 }}>
-          Encuentra tu proxima oportunidad
+          Encuentra tu próxima oportunidad
         </h1>
         <p style={{ fontSize: 16, color: '#64748b', maxWidth: 520, margin: '0 auto' }}>
-          Conectamos talento excepcional con las mejores empresas de Monterrey y noreste de Mexico.
+          Conectamos talento excepcional con las mejores empresas de Monterrey y noreste de México.
         </p>
       </div>
 
@@ -149,7 +149,7 @@ export default function CareersList() {
           <div style={{ fontSize: 40, marginBottom: 12 }}>&#128203;</div>
           <p style={{ fontSize: 16 }}>No hay vacantes disponibles en este momento.</p>
           <p style={{ fontSize: 13, marginTop: 8 }}>
-            Escribenos a reclutamiento@ngtalentconsulting.com.mx para mas informacion.
+            Escríbenos a reclutamiento@ngtalentconsulting.com.mx para más información.
           </p>
         </div>
       )}
@@ -163,10 +163,10 @@ export default function CareersList() {
       }}>
         <div>
           <div style={{ color: 'white', fontWeight: 700, fontSize: 18, marginBottom: 4 }}>
-            No encontraste lo que buscas?
+            ¿No encontraste lo que buscas?
           </div>
           <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14 }}>
-            Envianos tu CV y te avisamos cuando surja una oportunidad para tu perfil.
+            Envíanos tu CV y te avisamos cuando surja una oportunidad para tu perfil.
           </div>
         </div>
         <a

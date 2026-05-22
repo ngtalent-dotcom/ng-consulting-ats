@@ -50,7 +50,7 @@ export default function Clientes() {
           ) : clientes.length === 0 ? (
             <div className="empty-state" style={{ padding: '40px 0' }}>
               <div className="icon">&#127970;</div>
-              <p>No hay clientes aun. Agrega tu primer cliente desde Supabase.</p>
+              <p>No hay clientes aún. Agrega tu primer cliente desde Supabase.</p>
             </div>
           ) : (
             <div className="table-container">
