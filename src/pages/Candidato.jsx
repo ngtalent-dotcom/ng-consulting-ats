@@ -310,8 +310,31 @@ export default function Candidato() {
           {/* Columna derecha */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {/* Progreso en el proceso */}
-            {candidato.etapa !== 'Rechazado' && (
-              <div className="card">
+            <div className="card">
+              {candidato.etapa === 'Rechazado' ? (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, marginBottom: 14 }}>
+                    <span style={{ fontSize: 18 }}>&#128683;</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, color: '#991b1b', fontSize: 13 }}>Candidato rechazado</div>
+                      <div style={{ fontSize: 12, color: '#dc2626' }}>Puedes reactivarlo en cualquier etapa del proceso.</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12.5, color: '#475569', marginBottom: 10, fontWeight: 600 }}>Reactivar en etapa:</div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {todasEtapas.map(etapa => (
+                      <button
+                        key={etapa}
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => setConfirmEtapa(etapa)}
+                      >
+                        {etapa}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <div className="card-title">Progreso en el proceso</div>
                   <div style={{ display: 'flex', gap: 6 }}>
@@ -384,8 +407,9 @@ export default function Candidato() {
                     )
                   })}
                 </div>
-              </div>
-            )}
+                </>
+              )}
+            </div>
 
             {/* Mensaje del candidato */}
             {candidato.mensaje && (

@@ -140,7 +140,7 @@ export async function copiarCandidato(candidatoOriginal, nuevaVacanteId) {
   const { id, created_at, vacantes, ...resto } = candidatoOriginal
   const { data, error } = await supabase
     .from('candidatos')
-    .insert({ ...resto, vacante_id: nuevaVacanteId })
+    .insert({ ...resto, vacante_id: nuevaVacanteId, etapa: 'Aplicó', decision: null })
     .select()
     .single()
   if (error) throw error
