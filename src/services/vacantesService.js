@@ -67,6 +67,19 @@ export async function updateVacante(id, campos) {
   return data
 }
 
+// Obtener todas las vacantes con datos de cliente (para selector de modal)
+export async function getVacantesConCliente(excluirVacanteId = null) {
+  const { data, error } = await supabase
+    .from('vacantes')
+    .select('id, titulo, area, nivel, estatus, cliente_id, clientes(id, nombre)')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  if (excluirVacanteId) {
+    return data.filter(v => v.id !== Number(excluirVacanteId))
+  }
+  return data
+}
+
 // Eliminar vacante
 export async function deleteVacante(id) {
   const { error } = await supabase

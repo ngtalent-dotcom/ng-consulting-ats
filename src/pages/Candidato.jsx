@@ -5,6 +5,7 @@ import { getActividadByCandidato, registrarActividad } from '../services/activid
 import { generarPDFCandidato } from '../services/pdfService'
 import PrescreenModal from '../components/prescreen/PrescreenModal'
 import EditarCandidatoModal from '../components/EditarCandidatoModal'
+import MoverCopiarCandidatoModal from '../components/MoverCopiarCandidatoModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { nivelLabel } from '../services/prescreenScoring'
 
@@ -36,6 +37,8 @@ export default function Candidato() {
   const [actividad, setActividad] = useState([])
   const [nuevaNota, setNuevaNota] = useState('')
   const [guardandoNota, setGuardandoNota] = useState(false)
+  const [modalMoverCopiar, setModalMoverCopiar] = useState(false)
+  const [copiaCreada, setCopiaCreada] = useState(null)
 
   useEffect(() => {
     async function cargar() {
@@ -125,6 +128,15 @@ export default function Candidato() {
     navigate('/vacantes/' + candidato.vacante_id + '/pipeline')
   }
 
+  const handleMoverCopiarExito = async (operacion, nuevoCandidato, vacanteDestino) => {
+    if (operacion === 'mover') {
+      const actualizado = await getCandidatoById(Number(candidatoId))
+      setCandidato(actualizado)
+    } else {
+      setCopiaCreada({ id: nuevoCandidato.id, vacante_id: nuevoCandidato.vacante_id, titulo: vacanteDestino.titulo })
+    }
+  }
+
   return (
     <>
       <div className="page-header">
@@ -160,6 +172,30 @@ export default function Candidato() {
       </div>
 
       <div className="page-body">
+        {copiaCreada && (
+          <div style={{
+            background: '#d1fae5', border: '1px solid #6ee7b7',
+            borderRadius: 8, padding: '12px 16px',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            marginBottom: 16,
+          }}>
+            <span style={{ color: '#065f46', fontSize: 14 }}>
+              &#9989; Copia creada exitosamente en <strong>{copiaCreada.titulo}</strong>
+            </span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={() => navigate('/candidatos/' + copiaCreada.id)}
+              >
+                Ver copia &#8594;
+              </button>
+              <button className="btn btn-sm btn-ghost" onClick={() => setCopiaCreada(null)}>
+                &#x2715;
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="profile-grid">
           {/* Columna izquierda */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -448,6 +484,9 @@ export default function Candidato() {
                 >
                   &#128196; Descargar PDF
                 </button>
+                <button className="btn btn-secondary" onClick={() => setModalMoverCopiar(true)}>
+                  &#8599; Mover / Copiar a otra vacante
+                </button>
                 <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
                   &#9993; Enviar mensaje
                 </button>
@@ -587,6 +626,15 @@ export default function Candidato() {
         labelConfirmar="Eliminar candidato"
         peligroso
       />
+
+      {modalMoverCopiar && (
+        <MoverCopiarCandidatoModal
+          abierto={modalMoverCopiar}
+          onCerrar={() => setModalMoverCopiar(false)}
+          candidato={candidato}
+          onExito={handleMoverCopiarExito}
+        />
+      )}
     </>
   )
 }

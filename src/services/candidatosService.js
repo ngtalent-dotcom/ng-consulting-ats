@@ -122,6 +122,30 @@ export async function getTodosCandidatos({
   return resultado
 }
 
+// Mover candidato a otra vacante (actualiza vacante_id)
+export async function moverCandidato(candidatoId, nuevaVacanteId) {
+  const { data, error } = await supabase
+    .from('candidatos')
+    .update({ vacante_id: nuevaVacanteId })
+    .eq('id', candidatoId)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+// Copiar candidato a otra vacante (crea nuevo registro con todos los campos del original)
+export async function copiarCandidato(candidatoOriginal, nuevaVacanteId) {
+  const { id, created_at, ...resto } = candidatoOriginal // eslint-disable-line no-unused-vars
+  const { data, error } = await supabase
+    .from('candidatos')
+    .insert({ ...resto, vacante_id: nuevaVacanteId })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 // Eliminar candidato (y su CV en storage si existe)
 export async function deleteCandidato(id, cvUrl) {
   if (cvUrl) {
