@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../lib/AuthContext'
 
 const navItems = [
   { path: '/', icon: '📊', label: 'Dashboard' },
@@ -8,6 +9,7 @@ const navItems = [
 export default function Layout({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const { session, cerrarSesion } = useAuth()
 
   // Determine active nav item
   const isActive = (path) => {
@@ -61,8 +63,22 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div style={{ marginBottom: 4, color: 'rgba(255,255,255,0.7)', fontWeight: 600, fontSize: 13 }}>Gustavo Martínez</div>
-          <div>gustavo@ngtalentconsulting.com.mx</div>
+          <div style={{ marginBottom: 6, color: 'rgba(255,255,255,0.6)', fontSize: 12, wordBreak: 'break-all' }}>
+            {session?.user?.email || '—'}
+          </div>
+          <button
+            onClick={cerrarSesion}
+            style={{
+              background: 'none', border: 'none', padding: 0,
+              color: 'rgba(255,255,255,0.4)', fontSize: 12,
+              cursor: 'pointer', fontFamily: 'inherit',
+              transition: 'color 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.8)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}
+          >
+            Cerrar sesión →
+          </button>
         </div>
       </aside>
 
