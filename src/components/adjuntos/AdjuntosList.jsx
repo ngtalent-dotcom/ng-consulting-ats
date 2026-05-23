@@ -79,12 +79,12 @@ export default function AdjuntosList({ vacanteId }) {
     <div className="card" style={{ marginTop: 20 }}>
       <div className="card-header">
         <div className="card-title">&#128193; Documentos de la vacante</div>
-        <SubirAdjuntoBtn
-          vacanteId={vacanteId}
-          tipo="levantamiento_lleno"
-          label="Subir levantamiento"
-          onSubido={handleSubido}
-        />
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <SubirAdjuntoBtn vacanteId={vacanteId} tipo="levantamiento_lleno" label="Levantamiento" onSubido={handleSubido} />
+          <SubirAdjuntoBtn vacanteId={vacanteId} tipo="jd" label="JD" onSubido={handleSubido} />
+          <SubirAdjuntoBtn vacanteId={vacanteId} tipo="contrato" label="Contrato" onSubido={handleSubido} />
+          <SubirAdjuntoBtn vacanteId={vacanteId} tipo="otro" label="Otro" onSubido={handleSubido} />
+        </div>
       </div>
 
       {cargando ? (

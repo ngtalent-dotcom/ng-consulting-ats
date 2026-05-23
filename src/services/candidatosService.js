@@ -73,3 +73,15 @@ export async function updateCandidato(id, campos) {
   if (error) throw error
   return data
 }
+
+// Eliminar candidato (y su CV en storage si existe)
+export async function deleteCandidato(id, cvUrl) {
+  if (cvUrl) {
+    const match = cvUrl.match(/\/cvs\/(.+)$/)
+    if (match) {
+      await supabase.storage.from('cvs').remove([match[1]])
+    }
+  }
+  const { error } = await supabase.from('candidatos').delete().eq('id', id)
+  if (error) throw error
+}

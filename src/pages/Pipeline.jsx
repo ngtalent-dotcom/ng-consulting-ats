@@ -4,6 +4,7 @@ import { getVacanteById } from '../services/vacantesService'
 import { getCandidatosByVacante } from '../services/candidatosService'
 import DescargarTemplateBtn from '../components/adjuntos/DescargarTemplateBtn'
 import AdjuntosList from '../components/adjuntos/AdjuntosList'
+import NuevoCandidatoModal from '../components/NuevoCandidatoModal'
 
 const etapasBoardOrder = ['Aplicó', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
 
@@ -30,6 +31,7 @@ export default function Pipeline() {
   const [vacante, setVacante] = useState(null)
   const [candidatosList, setCandidatosList] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [showNuevoCandidato, setShowNuevoCandidato] = useState(false)
 
   useEffect(() => {
     async function cargar() {
@@ -284,7 +286,7 @@ export default function Pipeline() {
               &#9776; Tabla
             </button>
           </div>
-          <button className="btn btn-primary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+          <button className="btn btn-primary" onClick={() => setShowNuevoCandidato(true)}>
             + Agregar candidato
           </button>
         </div>
@@ -345,6 +347,14 @@ export default function Pipeline() {
 
         <AdjuntosList vacanteId={Number(vacanteId)} />
       </div>
+
+      {showNuevoCandidato && (
+        <NuevoCandidatoModal
+          vacanteId={Number(vacanteId)}
+          onClose={() => setShowNuevoCandidato(false)}
+          onCreado={(nuevo) => setCandidatosList(prev => [nuevo, ...prev])}
+        />
+      )}
     </>
   )
 }
