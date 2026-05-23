@@ -3,6 +3,7 @@ import StarRating from './StarRating'
 import { BLOQUES_FIJOS, TODAS_FIJAS } from '../../services/prescreenConfig'
 import { calcularResultado, nivelLabel } from '../../services/prescreenScoring'
 import { updateCandidato } from '../../services/candidatosService'
+import { registrarActividad } from '../../services/actividadService'
 
 export default function PrescreenModal({ candidato, vacante, onClose, onGuardado }) {
   const competenciasDinamicas = vacante?.prescreen_template?.competencias || []
@@ -34,6 +35,11 @@ export default function PrescreenModal({ candidato, vacante, onClose, onGuardado
       }
       if (candidato.etapa === 'Aplicó') campos.etapa = 'Pre-screen'
       await updateCandidato(candidato.id, campos)
+      await registrarActividad(candidato.id, 'prescreen',
+        `Pre-screen completado · Score ${total}/${totalPosible}`,
+        { score: total, total_posible: totalPosible, decision, nivel: nivel.label }
+      )
+      if (campos.etapa) await registrarActividad(candidato.id, 'etapa', `Etapa cambiada a "Pre-screen"`, { etapa_nueva: 'Pre-screen', etapa_anterior: candidato.etapa })
       onGuardado(campos)
       onClose()
     } catch (err) {

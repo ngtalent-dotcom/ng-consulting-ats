@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createCandidato, uploadCV } from '../services/candidatosService'
+import { registrarActividad } from '../services/actividadService'
 import Modal from './ui/Modal'
 
 const fuentes = ['LinkedIn', 'Referido', 'Portal de empleo', 'Bolsa de trabajo', 'Redes sociales', 'Directo', 'Otro']
@@ -62,6 +63,8 @@ export default function NuevoCandidatoModal({ vacanteId, onClose, onCreado }) {
         cv_url: cvUrl,
         etapa: 'Aplicó',
       })
+      await registrarActividad(nuevo.id, 'creacion', 'Candidato agregado al pipeline', { fuente: form.fuente || null })
+      if (cvUrl) await registrarActividad(nuevo.id, 'cv', 'CV subido')
       if (onCreado) onCreado(nuevo)
       onClose()
     } catch (err) {

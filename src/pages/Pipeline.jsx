@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, useDraggable, useDroppable } from '@dnd-kit/core'
 import { getVacanteById } from '../services/vacantesService'
 import { getCandidatosByVacante, updateEtapaCandidato } from '../services/candidatosService'
+import { registrarActividad } from '../services/actividadService'
 import DescargarTemplateBtn from '../components/adjuntos/DescargarTemplateBtn'
 import AdjuntosList from '../components/adjuntos/AdjuntosList'
 import NuevoCandidatoModal from '../components/NuevoCandidatoModal'
@@ -210,6 +211,10 @@ export default function Pipeline() {
     setCandidatosList(prev => prev.map(c => c.id === candidatoId ? { ...c, etapa: nuevaEtapa } : c))
     try {
       await updateEtapaCandidato(candidatoId, nuevaEtapa)
+      await registrarActividad(candidatoId, 'etapa',
+        `Etapa cambiada a "${nuevaEtapa}"`,
+        { etapa_nueva: nuevaEtapa, etapa_anterior: candidato.etapa }
+      )
     } catch {
       setCandidatosList(prev => prev.map(c => c.id === candidatoId ? { ...c, etapa: candidato.etapa } : c))
     }

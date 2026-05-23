@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getCandidatoById, updateEtapaCandidato, deleteCandidato } from '../services/candidatosService'
+import { getActividadByCandidato, registrarActividad } from '../services/actividadService'
 import PrescreenModal from '../components/prescreen/PrescreenModal'
 import EditarCandidatoModal from '../components/EditarCandidatoModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
@@ -31,12 +32,19 @@ export default function Candidato() {
   const [mostrarEditar, setMostrarEditar] = useState(false)
   const [confirmEtapa, setConfirmEtapa] = useState(null)
   const [confirmEliminar, setConfirmEliminar] = useState(false)
+  const [actividad, setActividad] = useState([])
+  const [nuevaNota, setNuevaNota] = useState('')
+  const [guardandoNota, setGuardandoNota] = useState(false)
 
   useEffect(() => {
     async function cargar() {
       try {
-        const data = await getCandidatoById(Number(candidatoId))
+        const [data, acts] = await Promise.all([
+          getCandidatoById(Number(candidatoId)),
+          getActividadByCandidato(Number(candidatoId)),
+        ])
         setCandidato(data)
+        setActividad(acts)
       } catch (err) {
         console.error('Error cargando candidato:', err)
       } finally {
@@ -83,9 +91,32 @@ export default function Candidato() {
   const etapaActualIndex = todasEtapas.indexOf(candidato.etapa)
 
   const handleCambiarEtapa = async () => {
+    const etapaAnterior = candidato.etapa
     const actualizado = await updateEtapaCandidato(candidato.id, confirmEtapa)
+    await registrarActividad(candidato.id, 'etapa',
+      `Etapa cambiada a "${confirmEtapa}"`,
+      { etapa_nueva: confirmEtapa, etapa_anterior: etapaAnterior }
+    )
+    const nuevaAct = { id: Date.now(), tipo: 'etapa', descripcion: `Etapa cambiada a "${confirmEtapa}"`, created_at: new Date().toISOString() }
+    setActividad(prev => [nuevaAct, ...prev])
     setCandidato(prev => ({ ...prev, etapa: actualizado.etapa }))
     setConfirmEtapa(null)
+  }
+
+  const handleGuardarNota = async () => {
+    const texto = nuevaNota.trim()
+    if (!texto) return
+    setGuardandoNota(true)
+    try {
+      await registrarActividad(candidato.id, 'nota', texto)
+      const nuevaAct = { id: Date.now(), tipo: 'nota', descripcion: texto, created_at: new Date().toISOString() }
+      setActividad(prev => [nuevaAct, ...prev])
+      setNuevaNota('')
+    } catch (err) {
+      console.error('Error guardando nota:', err)
+    } finally {
+      setGuardandoNota(false)
+    }
   }
 
   const handleEliminar = async () => {
@@ -422,12 +453,99 @@ export default function Candidato() {
         </div>
       </div>
 
+      {/* Historial y notas */}
+      <div className="card" style={{ marginTop: 20 }}>
+        <div className="card-title" style={{ marginBottom: 16 }}>&#128172; Historial y notas</div>
+
+        {/* Nueva nota */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'flex-start' }}>
+          <textarea
+            rows={2}
+            placeholder="Escribe una nota sobre este candidato..."
+            value={nuevaNota}
+            onChange={e => setNuevaNota(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleGuardarNota() }}
+            style={{
+              flex: 1, padding: '9px 12px', borderRadius: 8, border: '1.5px solid #e2e8f0',
+              fontSize: 13, fontFamily: 'inherit', resize: 'none', outline: 'none',
+              color: '#334155', lineHeight: 1.5,
+            }}
+          />
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleGuardarNota}
+            disabled={guardandoNota || !nuevaNota.trim()}
+            style={{ flexShrink: 0, marginTop: 2 }}
+          >
+            {guardandoNota ? '...' : 'Agregar nota'}
+          </button>
+        </div>
+
+        {/* Timeline */}
+        {actividad.length === 0 ? (
+          <div style={{ color: '#94a3b8', fontSize: 13, fontStyle: 'italic', padding: '8px 0' }}>
+            Sin actividad registrada aún.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {actividad.map((act, i) => {
+              const { icono, color, bg } = tipoMeta(act.tipo)
+              const fecha = act.created_at
+                ? new Date(act.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                : '—'
+              return (
+                <div key={act.id} style={{ display: 'flex', gap: 12, paddingBottom: 16 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: bg, color, fontSize: 14,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      {icono}
+                    </div>
+                    {i < actividad.length - 1 && (
+                      <div style={{ width: 2, flex: 1, minHeight: 12, background: '#f1f5f9', marginTop: 4 }} />
+                    )}
+                  </div>
+                  <div style={{ flex: 1, paddingTop: 4 }}>
+                    {act.tipo === 'nota' ? (
+                      <div style={{
+                        background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8,
+                        padding: '8px 12px', fontSize: 13, color: '#334155', lineHeight: 1.5,
+                      }}>
+                        {act.descripcion}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 13, color: '#475569', fontWeight: 500 }}>
+                        {act.descripcion}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 3 }}>
+                      {fecha}{act.autor ? ` · ${act.autor}` : ''}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
       {mostrarPrescreen && (
         <PrescreenModal
           candidato={candidato}
           vacante={vacante}
           onClose={() => setMostrarPrescreen(false)}
-          onGuardado={(campos) => setCandidato(prev => ({ ...prev, ...campos }))}
+          onGuardado={(campos) => {
+            setCandidato(prev => ({ ...prev, ...campos }))
+            const act = { id: Date.now(), tipo: 'prescreen', descripcion: `Pre-screen completado · Score ${campos.score}`, created_at: new Date().toISOString() }
+            setActividad(prev => [act, ...prev])
+            if (campos.etapa) {
+              const actEtapa = { id: Date.now() + 1, tipo: 'etapa', descripcion: `Etapa cambiada a "Pre-screen"`, created_at: new Date().toISOString() }
+              setActividad(prev => [actEtapa, ...prev])
+            }
+          }}
         />
       )}
 
@@ -435,7 +553,11 @@ export default function Candidato() {
         <EditarCandidatoModal
           candidato={candidato}
           onClose={() => setMostrarEditar(false)}
-          onActualizado={(actualizado) => setCandidato(prev => ({ ...prev, ...actualizado }))}
+          onActualizado={(actualizado) => {
+            setCandidato(prev => ({ ...prev, ...actualizado }))
+            registrarActividad(candidato.id, 'edicion', 'Perfil actualizado')
+            setActividad(prev => [{ id: Date.now(), tipo: 'edicion', descripcion: 'Perfil actualizado', created_at: new Date().toISOString() }, ...prev])
+          }}
         />
       )}
 
@@ -460,4 +582,16 @@ export default function Candidato() {
       />
     </>
   )
+}
+
+function tipoMeta(tipo) {
+  switch (tipo) {
+    case 'creacion':  return { icono: '👤', color: '#2563eb', bg: '#dbeafe' }
+    case 'etapa':     return { icono: '🔄', color: '#7c3aed', bg: '#ede9fe' }
+    case 'nota':      return { icono: '💬', color: '#d97706', bg: '#fef3c7' }
+    case 'prescreen': return { icono: '📋', color: '#059669', bg: '#d1fae5' }
+    case 'edicion':   return { icono: '✏️', color: '#0891b2', bg: '#cffafe' }
+    case 'cv':        return { icono: '📄', color: '#475569', bg: '#f1f5f9' }
+    default:          return { icono: '•',  color: '#64748b', bg: '#f1f5f9' }
+  }
 }
