@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getCandidatoById } from '../services/candidatosService'
+import PrescreenModal from '../components/prescreen/PrescreenModal'
+import { nivelLabel } from '../services/prescreenScoring'
 
 const etapaColors = {
   'Aplicó':             '#6366f1',
@@ -23,6 +25,7 @@ export default function Candidato() {
   const navigate = useNavigate()
   const [candidato, setCandidato] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [mostrarPrescreen, setMostrarPrescreen] = useState(false)
 
   useEffect(() => {
     async function cargar() {
@@ -307,12 +310,53 @@ export default function Candidato() {
               </div>
             )}
 
+            {/* Resultados pre-screen */}
+            {candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0 && (() => {
+              const nivel = nivelLabel(candidato.score != null ? candidato.score / (Object.keys(candidato.prescreen_scores).length * 5) : 0)
+              return (
+                <div className="card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                    <div className="card-title">&#128203; Resultados pre-screen</div>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setMostrarPrescreen(true)}>
+                      Editar evaluación
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 14px', background: '#f8fafc', borderRadius: 9, border: '1px solid #e2e8f0', marginBottom: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 24, fontWeight: 800, color: '#1e293b', lineHeight: 1 }}>
+                        {candidato.score}
+                        <span style={{ fontSize: 13, fontWeight: 400, color: '#94a3b8' }}>/{Object.keys(candidato.prescreen_scores).length * 5}</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>Puntuación total</div>
+                    </div>
+                    <span style={{ background: nivel.bg, color: nivel.color, padding: '5px 14px', borderRadius: 20, fontSize: 13, fontWeight: 700 }}>
+                      {nivel.label}
+                    </span>
+                  </div>
+                  <div className="info-row">
+                    {candidato.prescreen_entrevistador && (
+                      <div className="info-item">
+                        <div className="info-label">Entrevistador</div>
+                        <div className="info-value">{candidato.prescreen_entrevistador}</div>
+                      </div>
+                    )}
+                    {candidato.prescreen_fecha && (
+                      <div className="info-item">
+                        <div className="info-label">Fecha</div>
+                        <div className="info-value">{formatFecha(candidato.prescreen_fecha)}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })()}
+
             {/* Acciones */}
             <div className="card">
               <div className="card-title" style={{ marginBottom: 12 }}>Acciones</div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
-                  &#128203; Aplicar pre-screen
+                <button className="btn btn-secondary" onClick={() => setMostrarPrescreen(true)}>
+                  &#128203; {candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0 ? 'Ver pre-screen' : 'Aplicar pre-screen'}
                 </button>
                 <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
                   &#128196; Generar reporte PDF
@@ -322,12 +366,21 @@ export default function Candidato() {
                 </button>
               </div>
               <div style={{ marginTop: 10, fontSize: 11.5, color: 'var(--gray-400)' }}>
-                Estas funciones estarán disponibles en próximas fases.
+                Reporte PDF y mensajes estarán disponibles en próximas fases.
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {mostrarPrescreen && (
+        <PrescreenModal
+          candidato={candidato}
+          vacante={vacante}
+          onClose={() => setMostrarPrescreen(false)}
+          onGuardado={(campos) => setCandidato(prev => ({ ...prev, ...campos }))}
+        />
+      )}
     </>
   )
 }
