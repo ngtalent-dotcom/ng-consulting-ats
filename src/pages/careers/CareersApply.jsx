@@ -118,6 +118,29 @@ export default function CareersApply() {
         etapa: 'Aplicó',
       })
 
+      // 3. Notificaciones por email (fire-and-forget — no bloquea si falla)
+      fetch('/api/enviar-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          candidato: {
+            nombre: form.nombre.trim(),
+            apellido: form.apellido.trim(),
+            email: form.email.trim().toLowerCase(),
+            telefono: form.telefono.trim(),
+            ciudad: form.ciudad.trim() || null,
+            fuente: form.fuente,
+            linkedin: form.linkedin.trim() || null,
+            mensaje: form.mensaje.trim() || null,
+            cv_url: cvUrl,
+          },
+          vacante: {
+            titulo: vacante.titulo,
+            cliente: cliente?.nombre || '',
+          },
+        }),
+      }).catch(err => console.error('Error enviando emails:', err))
+
       setEnviado(true)
     } catch (err) {
       console.error('Error al enviar aplicación:', err)
