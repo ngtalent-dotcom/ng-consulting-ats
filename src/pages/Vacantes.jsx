@@ -17,6 +17,9 @@ export default function Vacantes() {
   const [cliente, setCliente] = useState(null)
   const [vacantes, setVacantes] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [filtroTexto, setFiltroTexto] = useState('')
+  const [filtroArea, setFiltroArea] = useState('')
+  const [filtroModalidad, setFiltroModalidad] = useState('')
 
   useEffect(() => {
     async function cargar() {
@@ -74,6 +77,17 @@ export default function Vacantes() {
   const handleVacanteActualizada = (actualizada) => {
     setVacantes(prev => prev.map(v => v.id === actualizada.id ? actualizada : v))
   }
+
+  const areasUnicas = [...new Set(vacantes.map(v => v.area).filter(Boolean))]
+  const modalidadesUnicas = [...new Set(vacantes.map(v => v.modalidad).filter(Boolean))]
+  const vacantesFiltradas = vacantes.filter(v => {
+    const texto = filtroTexto.toLowerCase().trim()
+    if (texto && !v.titulo.toLowerCase().includes(texto)) return false
+    if (filtroArea && v.area !== filtroArea) return false
+    if (filtroModalidad && v.modalidad !== filtroModalidad) return false
+    return true
+  })
+  const hayFiltros = filtroTexto || filtroArea || filtroModalidad
 
   const handleIniciarEliminar = async (vacante) => {
     const cands = await getCandidatosByVacante(vacante.id)
@@ -134,6 +148,50 @@ export default function Vacantes() {
           </div>
         </div>
 
+        {/* Barra de filtros */}
+        {vacantes.length > 0 && (
+          <div className="card" style={{ marginBottom: 16, padding: '12px 20px' }}>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="Buscar por título..."
+                value={filtroTexto}
+                onChange={e => setFiltroTexto(e.target.value)}
+                style={{
+                  flex: 1, minWidth: 160, padding: '8px 12px', borderRadius: 8,
+                  border: '1.5px solid #e2e8f0', fontSize: 13, outline: 'none',
+                  fontFamily: 'inherit', color: '#334155',
+                }}
+              />
+              {areasUnicas.length > 1 && (
+                <select value={filtroArea} onChange={e => setFiltroArea(e.target.value)}
+                  style={selStyle(!filtroArea)}>
+                  <option value="">Todas las áreas</option>
+                  {areasUnicas.map(a => <option key={a}>{a}</option>)}
+                </select>
+              )}
+              {modalidadesUnicas.length > 1 && (
+                <select value={filtroModalidad} onChange={e => setFiltroModalidad(e.target.value)}
+                  style={selStyle(!filtroModalidad)}>
+                  <option value="">Todas las modalidades</option>
+                  {modalidadesUnicas.map(m => <option key={m}>{m}</option>)}
+                </select>
+              )}
+              {hayFiltros && (
+                <>
+                  <span style={{ fontSize: 12, color: '#94a3b8' }}>
+                    {vacantesFiltradas.length} de {vacantes.length}
+                  </span>
+                  <button className="btn btn-ghost btn-sm"
+                    onClick={() => { setFiltroTexto(''); setFiltroArea(''); setFiltroModalidad('') }}>
+                    Limpiar
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Grid de vacantes */}
         {vacantes.length === 0 ? (
           <div className="card">
@@ -142,9 +200,16 @@ export default function Vacantes() {
               <p>No hay vacantes para este cliente. Crea la primera con el botón de arriba.</p>
             </div>
           </div>
+        ) : hayFiltros && vacantesFiltradas.length === 0 ? (
+          <div className="card">
+            <div className="empty-state">
+              <div className="icon">&#128270;</div>
+              <p>Sin resultados para los filtros aplicados.</p>
+            </div>
+          </div>
         ) : (
           <div className="vacantes-grid">
-            {vacantes.map(v => (
+            {vacantesFiltradas.map(v => (
               <div
                 key={v.id}
                 className="vacante-card"
@@ -235,4 +300,14 @@ export default function Vacantes() {
       />
     </>
   )
+}
+
+function selStyle(isEmpty) {
+  return {
+    padding: '8px 12px', borderRadius: 8,
+    border: '1.5px solid #e2e8f0', fontSize: 13,
+    outline: 'none', fontFamily: 'inherit',
+    color: isEmpty ? '#94a3b8' : '#334155',
+    background: 'white', cursor: 'pointer',
+  }
 }
