@@ -136,7 +136,8 @@ export async function moverCandidato(candidatoId, nuevaVacanteId) {
 
 // Copiar candidato a otra vacante (crea nuevo registro con todos los campos del original)
 export async function copiarCandidato(candidatoOriginal, nuevaVacanteId) {
-  const { id, created_at, ...resto } = candidatoOriginal // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  const { id, created_at, vacantes, ...resto } = candidatoOriginal
   const { data, error } = await supabase
     .from('candidatos')
     .insert({ ...resto, vacante_id: nuevaVacanteId })
