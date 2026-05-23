@@ -53,6 +53,18 @@ export default function Login() {
           <div style={{ fontSize: 13, color: '#94a3b8' }}>Sistema de reclutamiento</div>
         </div>
 
+        <div style={{
+          background: '#fffbeb', border: '1px solid #fde68a',
+          borderRadius: 8, padding: '10px 14px', marginBottom: 24,
+          fontSize: 12.5, color: '#92400e', lineHeight: 1.5, textAlign: 'center',
+        }}>
+          🔒 Acceso exclusivo para el equipo de N&amp;G Talent.<br />
+          Si buscas aplicar a una vacante, visita nuestro{' '}
+          <a href="/careers" style={{ color: '#92400e', fontWeight: 700, textDecoration: 'underline' }}>
+            portal de empleo
+          </a>.
+        </div>
+
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: '#475569', marginBottom: 6 }}>
