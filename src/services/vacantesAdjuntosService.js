@@ -59,7 +59,7 @@ export async function eliminarAdjunto(adjuntoId, storagePath) {
 export async function descargarTemplateLevantamiento(cliente, puesto) {
   const { data } = supabase.storage
     .from('templates')
-    .getPublicUrl('LevantamientoPerfil_Template.xlsx')
+    .getPublicUrl('TEMPLATE_LevantamientoPerfil.xlsx')
 
   const resp = await fetch(data.publicUrl)
   if (!resp.ok) throw new Error('No se pudo descargar la plantilla')
