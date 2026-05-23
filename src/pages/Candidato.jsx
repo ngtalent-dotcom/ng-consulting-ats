@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getCandidatoById, updateEtapaCandidato, deleteCandidato } from '../services/candidatosService'
 import { getActividadByCandidato, registrarActividad } from '../services/actividadService'
+import { generarPDFCandidato } from '../services/pdfService'
 import PrescreenModal from '../components/prescreen/PrescreenModal'
 import EditarCandidatoModal from '../components/EditarCandidatoModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
@@ -438,8 +439,14 @@ export default function Candidato() {
                 <button className="btn btn-secondary" onClick={() => setMostrarPrescreen(true)}>
                   &#128203; {candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0 ? 'Ver pre-screen' : 'Aplicar pre-screen'}
                 </button>
-                <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
-                  &#128196; Generar reporte PDF
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    const notas = actividad.filter(a => a.tipo === 'nota')
+                    generarPDFCandidato(candidato, vacante, notas)
+                  }}
+                >
+                  &#128196; Descargar PDF
                 </button>
                 <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
                   &#9993; Enviar mensaje

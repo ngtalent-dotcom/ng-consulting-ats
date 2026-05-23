@@ -44,6 +44,13 @@
     "fff5f5", "fff7ed", "ecfdf5",
     "93c5fd", "2563eb", "1e40af", "1e293b", "334155", "475569",
     "64748b", "94a3b8", "475569", "059669", "065f46", "10b981",
-    "briefcase"
+    "briefcase",
+    "jspdf", "jsPDF", "autotable", "autoTable", "addPage", "setFont",
+    "setFontSize", "setTextColor", "setFillColor", "setDrawColor",
+    "addImage", "getWidth", "getHeight", "splitTextToSize",
+    "helvetica", "pageBreak", "rowPageBreak",
+    "dnd", "droppable", "draggable", "kanban",
+    "Kanban", "Rechazado", "rechazados",
+    "overlayColor", "backdropFilter"
   ]
 }
