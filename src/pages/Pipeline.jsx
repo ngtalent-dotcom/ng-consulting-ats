@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, useDraggable, useDroppable } from '@dnd-kit/core'
 import { getVacanteById } from '../services/vacantesService'
-import { getCandidatosByVacante } from '../services/candidatosService'
+import { getCandidatosByVacante, updateEtapaCandidato } from '../services/candidatosService'
 import DescargarTemplateBtn from '../components/adjuntos/DescargarTemplateBtn'
 import AdjuntosList from '../components/adjuntos/AdjuntosList'
 import NuevoCandidatoModal from '../components/NuevoCandidatoModal'
@@ -24,6 +25,104 @@ const decisionColors = {
   'En espera':  '#6366f1',
 }
 
+function getInitials(nombre) {
+  return (nombre || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+}
+
+function CardContent({ candidato }) {
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <div className="avatar" style={{ width: 28, height: 28, fontSize: 11 }}>
+          {getInitials(candidato.nombre)}
+        </div>
+        <div className="kanban-card-name" style={{ marginBottom: 0 }}>
+          {candidato.nombre} {candidato.apellido || ''}
+        </div>
+      </div>
+      <div className="kanban-card-meta">
+        <span style={{ background: '#f1f5f9', padding: '1px 7px', borderRadius: 10, fontSize: 11 }}>
+          {candidato.fuente || 'Desconocido'}
+        </span>
+        {candidato.score != null && (
+          <span
+            className="score-pill"
+            style={{
+              background: candidato.score >= 4 ? '#d1fae5' : candidato.score >= 3 ? '#fef3c7' : '#fee2e2',
+              color: candidato.score >= 4 ? '#065f46' : candidato.score >= 3 ? '#92400e' : '#991b1b',
+            }}
+          >
+            &#11088; {candidato.score}
+          </span>
+        )}
+      </div>
+    </>
+  )
+}
+
+function KanbanCard({ candidato, onClick }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: String(candidato.id),
+  })
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className="kanban-card"
+      onClick={onClick}
+      style={{
+        transform: transform ? `translate3d(${transform.x}px,${transform.y}px,0)` : undefined,
+        opacity: isDragging ? 0 : 1,
+        cursor: 'grab',
+        touchAction: 'none',
+      }}
+    >
+      <CardContent candidato={candidato} />
+    </div>
+  )
+}
+
+function KanbanCardGhost({ candidato }) {
+  return (
+    <div
+      className="kanban-card"
+      style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.18)', transform: 'rotate(2deg)', cursor: 'grabbing' }}
+    >
+      <CardContent candidato={candidato} />
+    </div>
+  )
+}
+
+function KanbanCol({ etapa, candidatos, onCardClick }) {
+  const { setNodeRef, isOver } = useDroppable({ id: etapa })
+  const color = etapaColors[etapa] || '#6366f1'
+  return (
+    <div
+      ref={setNodeRef}
+      className="kanban-col"
+      style={{ background: isOver ? '#eff6ff' : undefined, transition: 'background 0.15s' }}
+    >
+      <div className="kanban-col-header">
+        <div className="kanban-col-title">
+          <span className="kanban-dot" style={{ background: color }} />
+          {etapa}
+        </div>
+        <span className="kanban-count">{candidatos.length}</span>
+      </div>
+      {candidatos.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '20px 0', color: isOver ? '#93c5fd' : 'var(--gray-300)', fontSize: 12 }}>
+          {isOver ? 'Soltar aquí' : 'Sin candidatos'}
+        </div>
+      ) : (
+        candidatos.map(c => (
+          <KanbanCard key={c.id} candidato={c} onClick={() => onCardClick(c.id)} />
+        ))
+      )}
+    </div>
+  )
+}
+
 export default function Pipeline() {
   const { vacanteId } = useParams()
   const navigate = useNavigate()
@@ -32,6 +131,14 @@ export default function Pipeline() {
   const [candidatosList, setCandidatosList] = useState([])
   const [cargando, setCargando] = useState(true)
   const [showNuevoCandidato, setShowNuevoCandidato] = useState(false)
+  const [filtroTexto, setFiltroTexto] = useState('')
+  const [filtroFuente, setFiltroFuente] = useState('')
+  const [filtroDecision, setFiltroDecision] = useState('')
+  const [activeId, setActiveId] = useState(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  )
 
   useEffect(() => {
     async function cargar() {
@@ -72,186 +179,45 @@ export default function Pipeline() {
 
   const cliente = vacante.clientes || {}
 
-  const getInitials = (nombre) =>
-    (nombre || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+  const fuentesUnicas = [...new Set(candidatosList.map(c => c.fuente).filter(Boolean))]
+  const decisionesUnicas = [...new Set(candidatosList.map(c => c.decision || 'Pendiente'))]
 
-  const rechazados = candidatosList.filter(c => c.etapa === 'Rechazado')
+  const candidatosFiltrados = candidatosList.filter(c => {
+    const texto = filtroTexto.toLowerCase().trim()
+    if (texto && !(
+      (c.nombre + ' ' + (c.apellido || '')).toLowerCase().includes(texto) ||
+      (c.email || '').toLowerCase().includes(texto)
+    )) return false
+    if (filtroFuente && c.fuente !== filtroFuente) return false
+    if (filtroDecision && (c.decision || 'Pendiente') !== filtroDecision) return false
+    return true
+  })
 
-  // KANBAN VIEW
-  const KanbanView = () => (
-    <div className="kanban-board">
-      {etapasBoardOrder.map(etapa => {
-        const cands = candidatosList.filter(c => c.etapa === etapa)
-        const color = etapaColors[etapa] || '#6366f1'
-        return (
-          <div key={etapa} className="kanban-col">
-            <div className="kanban-col-header">
-              <div className="kanban-col-title">
-                <span className="kanban-dot" style={{ background: color }} />
-                {etapa}
-              </div>
-              <span className="kanban-count">{cands.length}</span>
-            </div>
+  const hayFiltros = filtroTexto || filtroFuente || filtroDecision
+  const rechazadosFiltrados = candidatosFiltrados.filter(c => c.etapa === 'Rechazado')
+  const activeCandidato = activeId != null ? candidatosList.find(c => c.id === activeId) : null
 
-            {cands.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--gray-300)', fontSize: 12 }}>
-                Sin candidatos
-              </div>
-            ) : (
-              cands.map(c => (
-                <div
-                  key={c.id}
-                  className="kanban-card"
-                  onClick={() => navigate('/candidatos/' + c.id)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <div className="avatar" style={{ width: 28, height: 28, fontSize: 11 }}>
-                      {getInitials(c.nombre)}
-                    </div>
-                    <div className="kanban-card-name" style={{ marginBottom: 0 }}>
-                      {c.nombre} {c.apellido || ''}
-                    </div>
-                  </div>
-                  <div className="kanban-card-meta">
-                    <span style={{ background: '#f1f5f9', padding: '1px 7px', borderRadius: 10, fontSize: 11 }}>
-                      {c.fuente || 'Desconocido'}
-                    </span>
-                    {c.score != null && (
-                      <span
-                        className="score-pill"
-                        style={{
-                          background: c.score >= 4 ? '#d1fae5' : c.score >= 3 ? '#fef3c7' : '#fee2e2',
-                          color: c.score >= 4 ? '#065f46' : c.score >= 3 ? '#92400e' : '#991b1b',
-                        }}
-                      >
-                        &#11088; {c.score}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        )
-      })}
+  const handleDragStart = ({ active }) => setActiveId(Number(active.id))
 
-      {/* Columna Rechazados */}
-      <div className="kanban-col" style={{ opacity: 0.7 }}>
-        <div className="kanban-col-header">
-          <div className="kanban-col-title">
-            <span className="kanban-dot" style={{ background: etapaColors['Rechazado'] }} />
-            Rechazados
-          </div>
-          <span className="kanban-count">{rechazados.length}</span>
-        </div>
-        {rechazados.map(c => (
-          <div
-            key={c.id}
-            className="kanban-card"
-            onClick={() => navigate('/candidatos/' + c.id)}
-            style={{ opacity: 0.7 }}
-          >
-            <div className="kanban-card-name">{c.nombre} {c.apellido || ''}</div>
-            <div className="kanban-card-meta">{c.fuente || ''}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+  const handleDragEnd = async ({ active, over }) => {
+    setActiveId(null)
+    if (!over) return
+    const candidatoId = Number(active.id)
+    const nuevaEtapa = over.id
+    const candidato = candidatosList.find(c => c.id === candidatoId)
+    if (!candidato || candidato.etapa === nuevaEtapa) return
 
-  // TABLE VIEW
-  const TableView = () => (
-    <div className="card">
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Candidato</th>
-              <th>Fuente</th>
-              <th>Etapa</th>
-              <th>Score</th>
-              <th>Decisión</th>
-              <th>Fecha</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {candidatosList.map(c => {
-              const etapaColor = etapaColors[c.etapa] || '#6366f1'
-              const decColor = decisionColors[c.decision] || '#9ca3af'
-              return (
-                <tr
-                  key={c.id}
-                  className="clickable-row"
-                  onClick={() => navigate('/candidatos/' + c.id)}
-                >
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
-                        {getInitials(c.nombre)}
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>
-                          {c.nombre} {c.apellido || ''}
-                        </div>
-                        <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{c.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span className="tag">{c.fuente || '—'}</span></td>
-                  <td>
-                    <span
-                      className="badge"
-                      style={{
-                        background: etapaColor + '22',
-                        color: etapaColor,
-                        border: '1px solid ' + etapaColor + '44',
-                      }}
-                    >
-                      {c.etapa}
-                    </span>
-                  </td>
-                  <td>
-                    {c.score != null ? (
-                      <span
-                        className="score-pill"
-                        style={{
-                          background: c.score >= 4 ? '#d1fae5' : c.score >= 3 ? '#fef3c7' : '#fee2e2',
-                          color: c.score >= 4 ? '#065f46' : c.score >= 3 ? '#92400e' : '#991b1b',
-                        }}
-                      >
-                        &#11088; {c.score}
-                      </span>
-                    ) : (
-                      <span style={{ color: 'var(--gray-300)', fontSize: 12 }}>—</span>
-                    )}
-                  </td>
-                  <td>
-                    <span style={{ color: decColor, fontWeight: 600, fontSize: 12.5 }}>
-                      {c.decision || 'Pendiente'}
-                    </span>
-                  </td>
-                  <td style={{ color: 'var(--gray-400)', fontSize: 12 }}>
-                    {c.created_at
-                      ? new Date(c.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
-                      : '—'}
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      onClick={(e) => { e.stopPropagation(); navigate('/candidatos/' + c.id) }}
-                    >
-                      Ver &#8594;
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
+    setCandidatosList(prev => prev.map(c => c.id === candidatoId ? { ...c, etapa: nuevaEtapa } : c))
+    try {
+      await updateEtapaCandidato(candidatoId, nuevaEtapa)
+    } catch {
+      setCandidatosList(prev => prev.map(c => c.id === candidatoId ? { ...c, etapa: candidato.etapa } : c))
+    }
+  }
+
+  const handleDragCancel = () => setActiveId(null)
+
+  const limpiarFiltros = () => { setFiltroTexto(''); setFiltroFuente(''); setFiltroDecision('') }
 
   return (
     <>
@@ -294,7 +260,7 @@ export default function Pipeline() {
 
       <div className="page-body">
         {/* Info de la vacante */}
-        <div className="card" style={{ marginBottom: 20 }}>
+        <div className="card" style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
             <div>
               <div className="info-label">Cliente</div>
@@ -331,6 +297,45 @@ export default function Pipeline() {
           </div>
         </div>
 
+        {/* Barra de filtros */}
+        <div className="card" style={{ marginBottom: 16, padding: '12px 20px' }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              placeholder="Buscar por nombre o correo..."
+              value={filtroTexto}
+              onChange={e => setFiltroTexto(e.target.value)}
+              style={{
+                flex: 1, minWidth: 200, padding: '8px 12px', borderRadius: 8,
+                border: '1.5px solid #e2e8f0', fontSize: 13, outline: 'none',
+                fontFamily: 'inherit', color: '#334155',
+              }}
+            />
+            {fuentesUnicas.length > 0 && (
+              <select value={filtroFuente} onChange={e => setFiltroFuente(e.target.value)} style={selStyle(!filtroFuente)}>
+                <option value="">Todas las fuentes</option>
+                {fuentesUnicas.map(f => <option key={f}>{f}</option>)}
+              </select>
+            )}
+            {decisionesUnicas.length > 0 && (
+              <select value={filtroDecision} onChange={e => setFiltroDecision(e.target.value)} style={selStyle(!filtroDecision)}>
+                <option value="">Todas las decisiones</option>
+                {decisionesUnicas.map(d => <option key={d}>{d}</option>)}
+              </select>
+            )}
+            {hayFiltros && (
+              <>
+                <span style={{ fontSize: 12, color: '#94a3b8' }}>
+                  {candidatosFiltrados.length} de {candidatosList.length}
+                </span>
+                <button className="btn btn-ghost btn-sm" onClick={limpiarFiltros}>
+                  Limpiar
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
         {candidatosList.length === 0 ? (
           <div className="card">
             <div className="empty-state" style={{ padding: '40px 0' }}>
@@ -341,8 +346,132 @@ export default function Pipeline() {
               </p>
             </div>
           </div>
+        ) : hayFiltros && candidatosFiltrados.length === 0 ? (
+          <div className="card">
+            <div className="empty-state" style={{ padding: '40px 0' }}>
+              <div className="icon">&#128270;</div>
+              <p>Sin resultados para los filtros aplicados.</p>
+              <button className="btn btn-secondary" style={{ marginTop: 8 }} onClick={limpiarFiltros}>
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        ) : vista === 'kanban' ? (
+          <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={handleDragCancel}>
+            <div className="kanban-board">
+              {etapasBoardOrder.map(etapa => (
+                <KanbanCol
+                  key={etapa}
+                  etapa={etapa}
+                  candidatos={candidatosFiltrados.filter(c => c.etapa === etapa)}
+                  onCardClick={(id) => navigate('/candidatos/' + id)}
+                />
+              ))}
+              <div className="kanban-col" style={{ opacity: 0.7 }}>
+                <div className="kanban-col-header">
+                  <div className="kanban-col-title">
+                    <span className="kanban-dot" style={{ background: etapaColors['Rechazado'] }} />
+                    Rechazados
+                  </div>
+                  <span className="kanban-count">{rechazadosFiltrados.length}</span>
+                </div>
+                {rechazadosFiltrados.map(c => (
+                  <div
+                    key={c.id}
+                    className="kanban-card"
+                    onClick={() => navigate('/candidatos/' + c.id)}
+                    style={{ opacity: 0.7 }}
+                  >
+                    <div className="kanban-card-name">{c.nombre} {c.apellido || ''}</div>
+                    <div className="kanban-card-meta">{c.fuente || ''}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <DragOverlay>
+              {activeCandidato ? <KanbanCardGhost candidato={activeCandidato} /> : null}
+            </DragOverlay>
+          </DndContext>
         ) : (
-          vista === 'kanban' ? <KanbanView /> : <TableView />
+          <div className="card">
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Candidato</th>
+                    <th>Fuente</th>
+                    <th>Etapa</th>
+                    <th>Score</th>
+                    <th>Decisión</th>
+                    <th>Fecha</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {candidatosFiltrados.map(c => {
+                    const etapaColor = etapaColors[c.etapa] || '#6366f1'
+                    const decColor = decisionColors[c.decision] || '#9ca3af'
+                    return (
+                      <tr key={c.id} className="clickable-row" onClick={() => navigate('/candidatos/' + c.id)}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
+                              {getInitials(c.nombre)}
+                            </div>
+                            <div>
+                              <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>
+                                {c.nombre} {c.apellido || ''}
+                              </div>
+                              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{c.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span className="tag">{c.fuente || '—'}</span></td>
+                        <td>
+                          <span className="badge" style={{ background: etapaColor + '22', color: etapaColor, border: '1px solid ' + etapaColor + '44' }}>
+                            {c.etapa}
+                          </span>
+                        </td>
+                        <td>
+                          {c.score != null ? (
+                            <span
+                              className="score-pill"
+                              style={{
+                                background: c.score >= 4 ? '#d1fae5' : c.score >= 3 ? '#fef3c7' : '#fee2e2',
+                                color: c.score >= 4 ? '#065f46' : c.score >= 3 ? '#92400e' : '#991b1b',
+                              }}
+                            >
+                              &#11088; {c.score}
+                            </span>
+                          ) : (
+                            <span style={{ color: 'var(--gray-300)', fontSize: 12 }}>—</span>
+                          )}
+                        </td>
+                        <td>
+                          <span style={{ color: decColor, fontWeight: 600, fontSize: 12.5 }}>
+                            {c.decision || 'Pendiente'}
+                          </span>
+                        </td>
+                        <td style={{ color: 'var(--gray-400)', fontSize: 12 }}>
+                          {c.created_at
+                            ? new Date(c.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
+                            : '—'}
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={(e) => { e.stopPropagation(); navigate('/candidatos/' + c.id) }}
+                          >
+                            Ver &#8594;
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
 
         <AdjuntosList vacanteId={Number(vacanteId)} />
@@ -357,4 +486,14 @@ export default function Pipeline() {
       )}
     </>
   )
+}
+
+function selStyle(isEmpty) {
+  return {
+    padding: '8px 12px', borderRadius: 8,
+    border: '1.5px solid #e2e8f0', fontSize: 13,
+    outline: 'none', fontFamily: 'inherit',
+    color: isEmpty ? '#94a3b8' : '#334155',
+    background: 'white', cursor: 'pointer',
+  }
 }

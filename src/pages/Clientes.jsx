@@ -14,6 +14,8 @@ export default function Clientes() {
   const [clienteEditando, setClienteEditando] = useState(null)
   const [clienteEliminando, setClienteEliminando] = useState(null)
   const [vacantesEliminando, setVacantesEliminando] = useState(0)
+  const [filtroTexto, setFiltroTexto] = useState('')
+  const [filtroIndustria, setFiltroIndustria] = useState('')
 
   useEffect(() => {
     async function cargar() {
@@ -47,6 +49,19 @@ export default function Clientes() {
     return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
   }
 
+  const industriasUnicas = [...new Set(clientes.map(c => c.industria).filter(Boolean))]
+  const clientesFiltrados = clientes.filter(c => {
+    const texto = filtroTexto.toLowerCase().trim()
+    if (texto && !(
+      c.nombre.toLowerCase().includes(texto) ||
+      (c.contacto || '').toLowerCase().includes(texto) ||
+      (c.email || '').toLowerCase().includes(texto)
+    )) return false
+    if (filtroIndustria && c.industria !== filtroIndustria) return false
+    return true
+  })
+  const hayFiltros = filtroTexto || filtroIndustria
+
   return (
     <>
       <div className="page-header">
@@ -62,7 +77,38 @@ export default function Clientes() {
         <div className="card">
           <div className="card-header">
             <div className="card-title">
-              Todos los clientes {!cargando && '(' + clientes.length + ')'}
+              Todos los clientes ({!cargando && (hayFiltros ? clientesFiltrados.length + ' de ' : '') + clientes.length})
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="Buscar cliente..."
+                value={filtroTexto}
+                onChange={e => setFiltroTexto(e.target.value)}
+                style={{
+                  padding: '6px 12px', borderRadius: 8, border: '1.5px solid #e2e8f0',
+                  fontSize: 13, outline: 'none', fontFamily: 'inherit', color: '#334155', width: 180,
+                }}
+              />
+              {industriasUnicas.length > 0 && (
+                <select
+                  value={filtroIndustria}
+                  onChange={e => setFiltroIndustria(e.target.value)}
+                  style={{
+                    padding: '6px 12px', borderRadius: 8, border: '1.5px solid #e2e8f0',
+                    fontSize: 13, outline: 'none', fontFamily: 'inherit',
+                    color: filtroIndustria ? '#334155' : '#94a3b8', background: 'white', cursor: 'pointer',
+                  }}
+                >
+                  <option value="">Todas las industrias</option>
+                  {industriasUnicas.map(i => <option key={i}>{i}</option>)}
+                </select>
+              )}
+              {hayFiltros && (
+                <button className="btn btn-ghost btn-sm" onClick={() => { setFiltroTexto(''); setFiltroIndustria('') }}>
+                  Limpiar
+                </button>
+              )}
             </div>
           </div>
           {cargando ? (
@@ -70,7 +116,12 @@ export default function Clientes() {
           ) : clientes.length === 0 ? (
             <div className="empty-state" style={{ padding: '40px 0' }}>
               <div className="icon">&#127970;</div>
-              <p>No hay clientes aún. Agrega tu primer cliente desde Supabase.</p>
+              <p>No hay clientes aún. Agrega el primero con el botón de arriba.</p>
+            </div>
+          ) : hayFiltros && clientesFiltrados.length === 0 ? (
+            <div className="empty-state" style={{ padding: '40px 0' }}>
+              <div className="icon">&#128270;</div>
+              <p>Sin resultados para los filtros aplicados.</p>
             </div>
           ) : (
             <div className="table-container">
@@ -85,7 +136,7 @@ export default function Clientes() {
                   </tr>
                 </thead>
                 <tbody>
-                  {clientes.map(c => (
+                  {clientesFiltrados.map(c => (
                     <tr
                       key={c.id}
                       className="clickable-row"
