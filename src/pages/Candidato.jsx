@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getCandidatoById } from '../services/candidatosService'
+import { getCandidatoById, updateEtapaCandidato, deleteCandidato } from '../services/candidatosService'
 import PrescreenModal from '../components/prescreen/PrescreenModal'
+import EditarCandidatoModal from '../components/EditarCandidatoModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { nivelLabel } from '../services/prescreenScoring'
 
 const etapaColors = {
@@ -26,6 +28,9 @@ export default function Candidato() {
   const [candidato, setCandidato] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [mostrarPrescreen, setMostrarPrescreen] = useState(false)
+  const [mostrarEditar, setMostrarEditar] = useState(false)
+  const [confirmEtapa, setConfirmEtapa] = useState(null)
+  const [confirmEliminar, setConfirmEliminar] = useState(false)
 
   useEffect(() => {
     async function cargar() {
@@ -77,6 +82,17 @@ export default function Candidato() {
   const todasEtapas = ['Aplicó', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
   const etapaActualIndex = todasEtapas.indexOf(candidato.etapa)
 
+  const handleCambiarEtapa = async () => {
+    const actualizado = await updateEtapaCandidato(candidato.id, confirmEtapa)
+    setCandidato(prev => ({ ...prev, etapa: actualizado.etapa }))
+    setConfirmEtapa(null)
+  }
+
+  const handleEliminar = async () => {
+    await deleteCandidato(candidato.id, candidato.cv_url)
+    navigate('/vacantes/' + candidato.vacante_id + '/pipeline')
+  }
+
   return (
     <>
       <div className="page-header">
@@ -101,6 +117,12 @@ export default function Candidato() {
         <div className="header-actions">
           <button className="btn btn-secondary" onClick={() => navigate(-1)}>
             &#8592; Volver al pipeline
+          </button>
+          <button className="btn btn-secondary" onClick={() => setMostrarEditar(true)}>
+            ✏️ Editar perfil
+          </button>
+          <button className="btn btn-ghost" onClick={() => setConfirmEliminar(true)} style={{ color: '#dc2626' }}>
+            🗑 Eliminar
           </button>
         </div>
       </div>
@@ -222,7 +244,34 @@ export default function Candidato() {
             {/* Progreso en el proceso */}
             {candidato.etapa !== 'Rechazado' && (
               <div className="card">
-                <div className="card-title" style={{ marginBottom: 16 }}>Progreso en el proceso</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <div className="card-title">Progreso en el proceso</div>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {etapaActualIndex > 0 && (
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => setConfirmEtapa(todasEtapas[etapaActualIndex - 1])}
+                      >
+                        &#8592; Retroceder
+                      </button>
+                    )}
+                    {etapaActualIndex < todasEtapas.length - 1 && (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => setConfirmEtapa(todasEtapas[etapaActualIndex + 1])}
+                      >
+                        Avanzar &#8594;
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => setConfirmEtapa('Rechazado')}
+                      style={{ color: '#dc2626' }}
+                    >
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
                   {todasEtapas.map((etapa, i) => {
                     const isPast = i < etapaActualIndex
@@ -381,6 +430,34 @@ export default function Candidato() {
           onGuardado={(campos) => setCandidato(prev => ({ ...prev, ...campos }))}
         />
       )}
+
+      {mostrarEditar && (
+        <EditarCandidatoModal
+          candidato={candidato}
+          onClose={() => setMostrarEditar(false)}
+          onActualizado={(actualizado) => setCandidato(prev => ({ ...prev, ...actualizado }))}
+        />
+      )}
+
+      <ConfirmDialog
+        abierto={!!confirmEtapa}
+        onCerrar={() => setConfirmEtapa(null)}
+        onConfirmar={handleCambiarEtapa}
+        titulo="Cambiar etapa"
+        mensaje={confirmEtapa ? `¿Mover a "${candidato.nombre}" a la etapa "${confirmEtapa}"?` : ''}
+        labelConfirmar="Confirmar"
+        peligroso={confirmEtapa === 'Rechazado'}
+      />
+
+      <ConfirmDialog
+        abierto={confirmEliminar}
+        onCerrar={() => setConfirmEliminar(false)}
+        onConfirmar={handleEliminar}
+        titulo="Eliminar candidato"
+        mensaje={`¿Eliminar a "${candidato.nombre} ${candidato.apellido || ''}"? Se eliminará su perfil y CV permanentemente.`}
+        labelConfirmar="Eliminar candidato"
+        peligroso
+      />
     </>
   )
 }

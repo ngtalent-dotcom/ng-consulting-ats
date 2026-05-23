@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getClienteById } from '../services/clientesService'
-import { getVacantesByCliente } from '../services/vacantesService'
+import { getVacantesByCliente, deleteVacante } from '../services/vacantesService'
+import { getCandidatosByVacante } from '../services/candidatosService'
 import NuevaVacanteModal from '../components/NuevaVacanteModal'
+import EditarVacanteModal from '../components/EditarVacanteModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 export default function Vacantes() {
   const { clienteId } = useParams()
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
+  const [vacanteEditando, setVacanteEditando] = useState(null)
+  const [vacanteEliminando, setVacanteEliminando] = useState(null)
+  const [candidatosEliminando, setCandidatosEliminando] = useState(0)
   const [cliente, setCliente] = useState(null)
   const [vacantes, setVacantes] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -63,6 +69,22 @@ export default function Vacantes() {
 
   const handleVacanteCreada = (nuevaVacante) => {
     setVacantes(prev => [nuevaVacante, ...prev])
+  }
+
+  const handleVacanteActualizada = (actualizada) => {
+    setVacantes(prev => prev.map(v => v.id === actualizada.id ? actualizada : v))
+  }
+
+  const handleIniciarEliminar = async (vacante) => {
+    const cands = await getCandidatosByVacante(vacante.id)
+    setCandidatosEliminando(cands.length)
+    setVacanteEliminando(vacante)
+  }
+
+  const handleConfirmarEliminar = async () => {
+    await deleteVacante(vacanteEliminando.id)
+    setVacantes(prev => prev.filter(v => v.id !== vacanteEliminando.id))
+    setVacanteEliminando(null)
   }
 
   return (
@@ -157,9 +179,21 @@ export default function Vacantes() {
                   <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>
                     Abierta: {formatFecha(v.fecha_apertura)}
                   </div>
-                  <span className="badge" style={{ background: '#dbeafe', color: '#1e40af' }}>
-                    &#128100; Ver pipeline
-                  </span>
+                  <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setVacanteEditando(v)}
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => handleIniciarEliminar(v)}
+                      style={{ color: '#dc2626' }}
+                    >
+                      🗑
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -175,6 +209,30 @@ export default function Vacantes() {
           onCreated={handleVacanteCreada}
         />
       )}
+
+      {vacanteEditando && (
+        <EditarVacanteModal
+          vacante={vacanteEditando}
+          onClose={() => setVacanteEditando(null)}
+          onActualizada={handleVacanteActualizada}
+        />
+      )}
+
+      <ConfirmDialog
+        abierto={!!vacanteEliminando}
+        onCerrar={() => setVacanteEliminando(null)}
+        onConfirmar={handleConfirmarEliminar}
+        titulo="Eliminar vacante"
+        mensaje={
+          vacanteEliminando
+            ? candidatosEliminando > 0
+              ? `¿Eliminar "${vacanteEliminando.titulo}"? Esta vacante tiene ${candidatosEliminando} candidato${candidatosEliminando !== 1 ? 's' : ''} asociado${candidatosEliminando !== 1 ? 's' : ''} que también se eliminarán.`
+              : `¿Eliminar "${vacanteEliminando.titulo}"? Esta acción no se puede deshacer.`
+            : ''
+        }
+        labelConfirmar="Eliminar vacante"
+        peligroso
+      />
     </>
   )
 }

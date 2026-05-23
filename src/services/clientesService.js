@@ -43,3 +43,12 @@ export async function updateCliente(id, campos) {
   if (error) throw error
   return data
 }
+
+// Eliminar cliente
+export async function deleteCliente(id) {
+  const { error } = await supabase
+    .from('clientes')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}

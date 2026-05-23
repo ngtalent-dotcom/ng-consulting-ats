@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getClientes } from '../services/clientesService'
+import { getClientes, deleteCliente } from '../services/clientesService'
+import { getVacantesByCliente } from '../services/vacantesService'
+import NuevoClienteModal from '../components/NuevoClienteModal'
+import EditarClienteModal from '../components/EditarClienteModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 export default function Clientes() {
   const navigate = useNavigate()
   const [clientes, setClientes] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [showNuevo, setShowNuevo] = useState(false)
+  const [clienteEditando, setClienteEditando] = useState(null)
+  const [clienteEliminando, setClienteEliminando] = useState(null)
+  const [vacantesEliminando, setVacantesEliminando] = useState(0)
 
   useEffect(() => {
     async function cargar() {
@@ -21,6 +29,18 @@ export default function Clientes() {
     cargar()
   }, [])
 
+  const handleIniciarEliminar = async (cliente) => {
+    const vacantes = await getVacantesByCliente(cliente.id)
+    setVacantesEliminando(vacantes.length)
+    setClienteEliminando(cliente)
+  }
+
+  const handleConfirmarEliminar = async () => {
+    await deleteCliente(clienteEliminando.id)
+    setClientes(prev => prev.filter(c => c.id !== clienteEliminando.id))
+    setClienteEliminando(null)
+  }
+
   const formatFecha = (dateStr) => {
     if (!dateStr) return '—'
     const d = new Date(dateStr)
@@ -32,7 +52,7 @@ export default function Clientes() {
       <div className="page-header">
         <div className="page-title">Clientes</div>
         <div className="header-actions">
-          <button className="btn btn-primary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+          <button className="btn btn-primary" onClick={() => setShowNuevo(true)}>
             + Nuevo cliente
           </button>
         </div>
@@ -99,12 +119,27 @@ export default function Clientes() {
                         {formatFecha(c.created_at)}
                       </td>
                       <td>
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={(e) => { e.stopPropagation(); navigate('/clientes/' + c.id + '/vacantes') }}
-                        >
-                          Ver vacantes &#8594;
-                        </button>
+                        <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => navigate('/clientes/' + c.id + '/vacantes')}
+                          >
+                            Ver vacantes &#8594;
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => setClienteEditando(c)}
+                          >
+                            ✏️ Editar
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => handleIniciarEliminar(c)}
+                            style={{ color: '#dc2626' }}
+                          >
+                            🗑
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -114,6 +149,39 @@ export default function Clientes() {
           )}
         </div>
       </div>
+      {showNuevo && (
+        <NuevoClienteModal
+          onClose={() => setShowNuevo(false)}
+          onCreado={(nuevo) => setClientes(prev => [...prev, nuevo].sort((a, b) => a.nombre.localeCompare(b.nombre)))}
+        />
+      )}
+
+      {clienteEditando && (
+        <EditarClienteModal
+          cliente={clienteEditando}
+          onClose={() => setClienteEditando(null)}
+          onActualizado={(actualizado) => {
+            setClientes(prev => prev.map(c => c.id === actualizado.id ? actualizado : c))
+            setClienteEditando(null)
+          }}
+        />
+      )}
+
+      <ConfirmDialog
+        abierto={!!clienteEliminando}
+        onCerrar={() => setClienteEliminando(null)}
+        onConfirmar={handleConfirmarEliminar}
+        titulo="Eliminar cliente"
+        mensaje={
+          clienteEliminando
+            ? vacantesEliminando > 0
+              ? `¿Eliminar "${clienteEliminando.nombre}"? Este cliente tiene ${vacantesEliminando} vacante${vacantesEliminando !== 1 ? 's' : ''} asociada${vacantesEliminando !== 1 ? 's' : ''} que también se eliminarán.`
+              : `¿Eliminar "${clienteEliminando.nombre}"? Esta acción no se puede deshacer.`
+            : ''
+        }
+        labelConfirmar="Eliminar cliente"
+        peligroso
+      />
     </>
   )
 }

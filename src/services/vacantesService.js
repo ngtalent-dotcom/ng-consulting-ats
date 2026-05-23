@@ -66,3 +66,12 @@ export async function updateVacante(id, campos) {
   if (error) throw error
   return data
 }
+
+// Eliminar vacante
+export async function deleteVacante(id) {
+  const { error } = await supabase
+    .from('vacantes')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
