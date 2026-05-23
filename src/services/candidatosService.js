@@ -74,6 +74,16 @@ export async function updateCandidato(id, campos) {
   return data
 }
 
+// Obtener todos los candidatos (para métricas del dashboard)
+export async function getTodosCandidatos() {
+  const { data, error } = await supabase
+    .from('candidatos')
+    .select('id, etapa, fuente, created_at, nombre, apellido, vacante_id, vacantes(titulo, clientes(nombre))')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
 // Eliminar candidato (y su CV en storage si existe)
 export async function deleteCandidato(id, cvUrl) {
   if (cvUrl) {
