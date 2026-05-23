@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getVacanteById } from '../services/vacantesService'
 import { getCandidatosByVacante } from '../services/candidatosService'
+import DescargarTemplateBtn from '../components/adjuntos/DescargarTemplateBtn'
+import AdjuntosList from '../components/adjuntos/AdjuntosList'
 
 const etapasBoardOrder = ['Aplicó', 'Pre-screen', 'Entrevista Cliente', 'Oferta', 'Cerrado']
 
@@ -267,6 +269,7 @@ export default function Pipeline() {
           <div className="page-title">Pipeline &middot; {vacante.titulo}</div>
         </div>
         <div className="header-actions">
+          <DescargarTemplateBtn cliente={cliente?.nombre || ''} puesto={vacante.titulo || ''} />
           <div className="toggle-group">
             <button
               className={'toggle-btn ' + (vista === 'kanban' ? 'active' : '')}
@@ -339,6 +342,8 @@ export default function Pipeline() {
         ) : (
           vista === 'kanban' ? <KanbanView /> : <TableView />
         )}
+
+        <AdjuntosList vacanteId={Number(vacanteId)} />
       </div>
     </>
   )

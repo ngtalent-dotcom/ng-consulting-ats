@@ -15,7 +15,7 @@ export async function getCandidatosByVacante(vacanteId) {
 export async function getCandidatoById(id) {
   const { data, error } = await supabase
     .from('candidatos')
-    .select('*, vacantes(id, titulo, clientes(nombre))')
+    .select('*, vacantes(id, titulo, prescreen_template, clientes(nombre))')
     .eq('id', id)
     .single()
   if (error) throw error

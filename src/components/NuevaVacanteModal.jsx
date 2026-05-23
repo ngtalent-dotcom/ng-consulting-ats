@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createVacante } from '../services/vacantesService'
+import CompetenciasEditor from './prescreen/CompetenciasEditor'
 
 const areas = ['Ventas', 'Operaciones', 'Finanzas', 'Recursos Humanos', 'Ingeniería', 'Marketing', 'Tecnología', 'Administración', 'Legal', 'Otro']
 const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador', 'Gerencial', 'Dirección']
@@ -16,6 +17,7 @@ const vacioForm = {
   descripcion: '',
   requisitos: '',
   publicada: true,
+  competencias: [],
 }
 
 export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, onCreated }) {
@@ -37,6 +39,8 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
     if (!form.nivel) e.nivel = 'Requerido'
     if (!form.modalidad) e.modalidad = 'Requerido'
     if (!form.ciudad.trim()) e.ciudad = 'Requerido'
+    if (form.competencias.length > 0 && form.competencias.length < 2) e.competencias = 'Agrega al menos 2 competencias o deja el campo vacío.'
+    if (form.competencias.length > 8) e.competencias = 'Máximo 8 competencias.'
     return e
   }
 
@@ -61,6 +65,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
         descripcion: form.descripcion.trim() || null,
         requisitos: form.requisitos.trim() || null,
         publicada: form.publicada,
+        prescreen_template: { competencias: form.competencias },
         estatus: 'Activa',
         prioridad: 'Media',
       })
@@ -217,6 +222,17 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
               rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
             />
           </Field>
+
+          {/* Competencias para pre-screen */}
+          <div>
+            <CompetenciasEditor
+              competencias={form.competencias}
+              onChange={val => set('competencias', val)}
+            />
+            {errors.competencias && (
+              <div style={{ fontSize: 12, color: '#dc2626', marginTop: 6 }}>{errors.competencias}</div>
+            )}
+          </div>
 
           {/* Toggle publicar en portal */}
           <div style={{
