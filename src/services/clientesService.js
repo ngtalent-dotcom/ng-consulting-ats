@@ -52,3 +52,15 @@ export async function deleteCliente(id) {
     .eq('id', id)
   if (error) throw error
 }
+
+// Regenerar token del portal para un cliente
+export async function regenerarTokenPortal(clienteId) {
+  const { data, error } = await supabase
+    .from('clientes')
+    .update({ portal_token: crypto.randomUUID() })
+    .eq('id', clienteId)
+    .select('portal_token')
+    .single()
+  if (error) throw error
+  return data.portal_token
+}

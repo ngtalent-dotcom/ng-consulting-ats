@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getClientes, deleteCliente } from '../services/clientesService'
+import { getClientes, deleteCliente, regenerarTokenPortal } from '../services/clientesService'
 import { getVacantesByCliente } from '../services/vacantesService'
 import NuevoClienteModal from '../components/NuevoClienteModal'
 import EditarClienteModal from '../components/EditarClienteModal'
@@ -16,6 +16,7 @@ export default function Clientes() {
   const [vacantesEliminando, setVacantesEliminando] = useState(0)
   const [filtroTexto, setFiltroTexto] = useState('')
   const [filtroIndustria, setFiltroIndustria] = useState('')
+  const [copiandoId, setCopiandoId] = useState(null)
 
   useEffect(() => {
     async function cargar() {
@@ -35,6 +36,19 @@ export default function Clientes() {
     const vacantes = await getVacantesByCliente(cliente.id)
     setVacantesEliminando(vacantes.length)
     setClienteEliminando(cliente)
+  }
+
+  const handleCompartirPortal = async (e, c) => {
+    e.stopPropagation()
+    let token = c.portal_token
+    if (!token) {
+      token = await regenerarTokenPortal(c.id)
+      setClientes(prev => prev.map(cl => cl.id === c.id ? { ...cl, portal_token: token } : cl))
+    }
+    const url = `${window.location.origin}/portal/${token}`
+    await navigator.clipboard.writeText(url)
+    setCopiandoId(c.id)
+    setTimeout(() => setCopiandoId(null), 2000)
   }
 
   const handleConfirmarEliminar = async () => {
@@ -170,12 +184,20 @@ export default function Clientes() {
                         {formatFecha(c.created_at)}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
                           <button
                             className="btn btn-secondary btn-sm"
                             onClick={() => navigate('/clientes/' + c.id + '/vacantes')}
                           >
                             Ver vacantes &#8594;
+                          </button>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={(e) => handleCompartirPortal(e, c)}
+                            title="Copiar enlace del portal para el cliente"
+                            style={copiandoId === c.id ? { background: '#d1fae5', color: '#065f46', borderColor: '#6ee7b7' } : {}}
+                          >
+                            {copiandoId === c.id ? '✓ Copiado' : '🔗 Portal'}
                           </button>
                           <button
                             className="btn btn-secondary btn-sm"

@@ -10,6 +10,7 @@ import Candidato from './pages/Candidato'
 import CareersList from './pages/careers/CareersList'
 import CareersDetail from './pages/careers/CareersDetail'
 import CareersApply from './pages/careers/CareersApply'
+import Portal from './pages/portal/Portal'
 import './index.css'
 
 function Privado({ children }) {
@@ -30,10 +31,11 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Portal público de candidatos — sin auth */}
+          {/* Portales públicos — sin auth */}
           <Route path="/careers" element={<CareersList />} />
           <Route path="/careers/:vacanteId" element={<CareersDetail />} />
           <Route path="/careers/:vacanteId/apply" element={<CareersApply />} />
+          <Route path="/portal/:token" element={<Portal />} />
 
           {/* Login */}
           <Route path="/login" element={<Login />} />

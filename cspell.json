@@ -51,6 +51,11 @@
     "helvetica", "pageBreak", "rowPageBreak",
     "dnd", "droppable", "draggable", "kanban",
     "Kanban", "Rechazado", "rechazados",
-    "overlayColor", "backdropFilter"
+    "overlayColor", "backdropFilter",
+    "PortalLayout", "EtapaBadge", "ScoreStars",
+    "regenerarTokenPortal", "copiandoId", "handleCompartirPortal",
+    "ede9fe", "7c3aed", "1d4ed8", "cffafe", "0369a1",
+    "fef9c3", "854d0e", "fee2e2", "991b1b", "f59e0b",
+    "6ee7b7"
   ]
 }
