@@ -74,14 +74,52 @@ export async function updateCandidato(id, campos) {
   return data
 }
 
-// Obtener todos los candidatos (para métricas del dashboard)
-export async function getTodosCandidatos() {
-  const { data, error } = await supabase
+// Obtener todos los candidatos con filtros opcionales
+export async function getTodosCandidatos({
+  busqueda = '',
+  etapa = '',
+  decision = '',
+  cliente_id = '',
+  vacante_id = '',
+} = {}) {
+  let query = supabase
     .from('candidatos')
-    .select('id, etapa, fuente, created_at, nombre, apellido, vacante_id, vacantes(titulo, clientes(nombre))')
+    .select(`
+      id, nombre, apellido, email, telefono, ciudad,
+      fuente, etapa, score, decision, created_at, cv_url, linkedin,
+      vacantes (
+        id, titulo, area, nivel, cliente_id,
+        clientes ( id, nombre )
+      )
+    `)
     .order('created_at', { ascending: false })
+
+  if (etapa)      query = query.eq('etapa', etapa)
+  if (decision)   query = query.eq('decision', decision)
+  if (vacante_id) query = query.eq('vacante_id', vacante_id)
+
+  const { data, error } = await query
   if (error) throw error
-  return data
+
+  let resultado = data
+
+  if (busqueda.trim()) {
+    const term = busqueda.toLowerCase()
+    resultado = resultado.filter(c =>
+      `${c.nombre} ${c.apellido}`.toLowerCase().includes(term) ||
+      c.email?.toLowerCase().includes(term) ||
+      c.vacantes?.titulo?.toLowerCase().includes(term) ||
+      c.vacantes?.clientes?.nombre?.toLowerCase().includes(term)
+    )
+  }
+
+  if (cliente_id) {
+    resultado = resultado.filter(c =>
+      String(c.vacantes?.cliente_id) === String(cliente_id) // TODO(performance)
+    )
+  }
+
+  return resultado
 }
 
 // Eliminar candidato (y su CV en storage si existe)

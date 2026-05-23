@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getClientes } from '../services/clientesService'
 import { getVacantes } from '../services/vacantesService'
 import { getTodosCandidatos } from '../services/candidatosService'
+import TablaCandidatosGlobal from '../components/TablaCandidatosGlobal'
 
 const etapaColors = {
   'Aplicó':             '#6366f1',
@@ -281,6 +282,9 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* Tabla global de candidatos */}
+        <TablaCandidatosGlobal />
       </div>
     </>
   )
