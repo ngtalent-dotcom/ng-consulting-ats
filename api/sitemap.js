@@ -3,6 +3,7 @@ export default async function handler(req, res) {
   const anonKey = process.env.VITE_SUPABASE_ANON_KEY
 
   let vacantes = []
+  let debugInfo = null
   try {
     const response = await fetch(
       `${supabaseUrl}/rest/v1/vacantes?select=id,updated_at&publicada=eq.true&estatus=eq.Activa`,
@@ -13,10 +14,16 @@ export default async function handler(req, res) {
         },
       }
     )
-    vacantes = await response.json()
-    if (!Array.isArray(vacantes)) vacantes = []
-  } catch {
+    const json = await response.json()
+    debugInfo = { status: response.status, isArray: Array.isArray(json), count: Array.isArray(json) ? json.length : null, sample: JSON.stringify(json).slice(0, 200) }
+    vacantes = Array.isArray(json) ? json : []
+  } catch (err) {
+    debugInfo = { error: err.message, urlSet: !!supabaseUrl, keySet: !!anonKey }
     vacantes = []
+  }
+
+  if (req.query.debug) {
+    return res.status(200).json({ urlSet: !!supabaseUrl, keySet: !!anonKey, ...debugInfo })
   }
 
   const base = process.env.SITE_URL || `https://${process.env.VERCEL_URL}` || 'https://ng-consulting-ats.vercel.app'
