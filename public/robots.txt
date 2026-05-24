@@ -1,6 +1,11 @@
 User-agent: *
-Allow: /careers
-Allow: /sitemap.xml
-Disallow: /
+Disallow: /login
+Disallow: /dashboard
+Disallow: /clientes
+Disallow: /vacantes
+Disallow: /candidatos
+Disallow: /pipeline
+Disallow: /portal
+Disallow: /portal-vacante
 
 Sitemap: https://www.ngtalentconsulting.com.mx/sitemap.xml
