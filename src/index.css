@@ -168,6 +168,19 @@ tr:hover td { background: var(--gray-50); }
 }
 
 /* ===== CAREERS — clases reutilizables ===== */
+
+/* Detalle de vacante: 2 columnas en escritorio, 1 en móvil */
+.careers-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+.careers-detail-sidebar { position: sticky; top: 84px; }
+
+/* Formulario de aplicación: 2 columnas en escritorio, 1 en móvil */
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
 .careers-tarjeta {
   background: white; border: 1px solid #e2e8f0; border-radius: 12px;
   padding: 22px 24px; cursor: pointer; transition: all 0.15s;
@@ -218,6 +231,9 @@ tr:hover td { background: var(--gray-50); }
   .col-oculta-movil { display: none; }
 
   /* Careers */
+  .careers-detail-grid { grid-template-columns: 1fr; }
+  .careers-detail-sidebar { position: static; top: 0; }
+  .form-grid-2 { grid-template-columns: 1fr; }
   .careers-tarjeta { flex-wrap: wrap; padding: 16px; gap: 12px; }
   .careers-cta { display: none; }
   .careers-nav-contacto { display: none; }

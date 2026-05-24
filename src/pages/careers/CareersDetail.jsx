@@ -83,7 +83,7 @@ export default function CareersDetail() {
         &#8592; Todas las vacantes
       </button>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, alignItems: 'start' }}>
+      <div className="careers-detail-grid">
         {/* Columna principal */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {/* Header */}
@@ -154,7 +154,7 @@ export default function CareersDetail() {
         </div>
 
         {/* Sidebar derecho — CTA sticky */}
-        <div style={{ position: 'sticky', top: 84 }}>
+        <div className="careers-detail-sidebar">
           <div style={{ background: 'white', borderRadius: 12, border: '1px solid #e2e8f0', padding: 24 }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: '#1e293b', marginBottom: 4 }}>
               Salario competitivo

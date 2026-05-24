@@ -234,7 +234,7 @@ export default function CareersApply() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
           {/* Nombre y apellido */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="form-grid-2">
             <Field label="Nombre *" error={errors.nombre}>
               <input
                 type="text" placeholder="Ej. Carlos"
@@ -254,7 +254,7 @@ export default function CareersApply() {
           </div>
 
           {/* Email y teléfono */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="form-grid-2">
             <Field label="Correo electrónico *" error={errors.email}>
               <input
                 type="email" placeholder="tu@correo.com"
@@ -274,7 +274,7 @@ export default function CareersApply() {
           </div>
 
           {/* Ciudad y fuente */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="form-grid-2">
             <Field label="Ciudad de residencia">
               <input
                 type="text" placeholder="Ej. Monterrey, NL"
