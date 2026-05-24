@@ -41,7 +41,7 @@ export default function CareersList() {
         }}>
           {cargando ? 'Cargando...' : vacantesPublicas.length + ' vacantes disponibles'}
         </div>
-        <h1 style={{ fontSize: 36, fontWeight: 800, color: '#1e293b', marginBottom: 12, lineHeight: 1.2 }}>
+        <h1 className="careers-titulo-hero">
           Encuentra tu próxima oportunidad
         </h1>
         <p style={{ fontSize: 16, color: '#64748b', maxWidth: 520, margin: '0 auto' }}>
@@ -63,13 +63,8 @@ export default function CareersList() {
             return (
               <div
                 key={v.id}
+                className="careers-tarjeta"
                 onClick={() => navigate('/careers/' + v.id)}
-                style={{
-                  background: 'white', border: '1px solid #e2e8f0',
-                  borderRadius: 12, padding: '22px 24px',
-                  cursor: 'pointer', transition: 'all 0.15s',
-                  display: 'flex', alignItems: 'center', gap: 20,
-                }}
                 onMouseEnter={e => {
                   e.currentTarget.style.borderColor = '#2563eb'
                   e.currentTarget.style.boxShadow = '0 4px 16px rgba(37,99,235,0.1)'
@@ -123,7 +118,7 @@ export default function CareersList() {
                 </div>
 
                 {/* CTA */}
-                <div style={{ flexShrink: 0, textAlign: 'right' }}>
+                <div className="careers-cta">
                   <div style={{
                     background: '#2563eb', color: 'white',
                     padding: '10px 20px', borderRadius: 8,

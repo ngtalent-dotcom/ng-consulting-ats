@@ -2,7 +2,7 @@ export default function PortalLayout({ children }) {
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif' }}>
       <div style={{
-        background: '#1e3a5f', padding: '14px 32px',
+        background: '#1e3a5f', padding: '14px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
         position: 'sticky', top: 0, zIndex: 10,
         boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
@@ -12,7 +12,7 @@ export default function PortalLayout({ children }) {
         <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>Portal de seguimiento</div>
       </div>
 
-      <main style={{ maxWidth: 920, margin: '0 auto', padding: '32px 20px 60px' }}>
+      <main style={{ maxWidth: 920, margin: '0 auto', padding: '24px 16px 60px' }}>
         {children}
       </main>
 

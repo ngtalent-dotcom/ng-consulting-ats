@@ -10,7 +10,7 @@ export default function CareersLayout({ children }) {
       <header style={{
         background: '#1e3a5f',
         color: 'white',
-        padding: '0 40px',
+        padding: '0 24px',
         height: 64,
         display: 'flex',
         alignItems: 'center',
@@ -38,9 +38,9 @@ export default function CareersLayout({ children }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className="careers-nav-contacto">
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-            📍 Monterrey, NL
+            &#128205; Monterrey, NL
           </span>
           <a
             href="mailto:reclutamiento@ngtalentconsulting.com.mx"
@@ -52,7 +52,7 @@ export default function CareersLayout({ children }) {
       </header>
 
       {/* Contenido */}
-      <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px' }}>
+      <main style={{ maxWidth: 900, margin: '0 auto', padding: '32px 16px' }}>
         {children}
       </main>
 
