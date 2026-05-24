@@ -12,6 +12,13 @@ const ETAPA_CONFIG = {
   'Rechazado':          { bg: '#fee2e2', color: '#991b1b' },
 }
 
+const DECISION_CONFIG = {
+  'Fuerte':               { bg: '#d1fae5', color: '#065f46' },
+  'Viable con reservas':  { bg: '#fef9c3', color: '#854d0e' },
+  'No Apto':              { bg: '#fee2e2', color: '#991b1b' },
+  'Pendiente':            { bg: '#f1f5f9', color: '#64748b' },
+}
+
 const ETAPA_ORDEN = [
   'Aplicó', 'Prescreen', 'Entrevista RRHH',
   'Entrevista cliente', 'Oferta', 'Contratado', 'Rechazado',
@@ -24,25 +31,156 @@ const ESTATUS_CONFIG = {
   'Cerrada':   { bg: '#f1f5f9', color: '#64748b' },
 }
 
-function EtapaBadge({ etapa }) {
-  const cfg = ETAPA_CONFIG[etapa] || { bg: '#f1f5f9', color: '#475569' }
+function Badge({ label, config }) {
+  const cfg = config[label] || { bg: '#f1f5f9', color: '#475569' }
   return (
     <span style={{
       display: 'inline-block', padding: '2px 9px', borderRadius: 20,
       fontSize: 11.5, fontWeight: 600, whiteSpace: 'nowrap',
       background: cfg.bg, color: cfg.color,
     }}>
-      {etapa}
+      {label}
     </span>
   )
 }
 
-function ScoreStars({ score }) {
-  if (!score) return <span style={{ color: '#cbd5e1', fontSize: 12 }}>—</span>
+function formatFecha(iso) {
+  if (!iso) return null
+  return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+function CandidatoModal({ candidato, vacante, onClose }) {
+  const prescreenHecho = candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0
+  const competencias = vacante?.prescreen_template?.competencias || []
+
   return (
-    <span style={{ color: '#f59e0b', fontSize: 14, letterSpacing: 1 }} title={`${score}/5`}>
-      {'★'.repeat(score)}{'☆'.repeat(5 - score)}
-    </span>
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.5)',
+        zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: 'white', borderRadius: 14, width: '100%', maxWidth: 560,
+          maxHeight: '88vh', overflowY: 'auto',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        }}
+      >
+        {/* Header */}
+        <div style={{ padding: '22px 24px 16px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#1e293b' }}>
+              {candidato.nombre} {candidato.apellido}
+            </div>
+            {candidato.ciudad && (
+              <div style={{ fontSize: 13, color: '#64748b', marginTop: 3 }}>&#128205; {candidato.ciudad}</div>
+            )}
+            <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+              <Badge label={candidato.etapa} config={ETAPA_CONFIG} />
+              {candidato.decision && candidato.decision !== 'Pendiente' && (
+                <Badge label={candidato.decision} config={DECISION_CONFIG} />
+              )}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#64748b', flexShrink: 0 }}
+          >
+            &#x2715;
+          </button>
+        </div>
+
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+          {/* Notas del reclutador */}
+          {candidato.notas && (
+            <div>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+                Notas del reclutador
+              </div>
+              <div style={{ background: '#f8fafc', borderLeft: '3px solid #1e3a5f', borderRadius: '0 8px 8px 0', padding: '12px 14px', fontSize: 14, color: '#334155', lineHeight: 1.6, fontStyle: 'italic' }}>
+                {candidato.notas}
+              </div>
+            </div>
+          )}
+
+          {/* Resumen de entrevista prescreen */}
+          {prescreenHecho && (
+            <div>
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+                Resumen de entrevista
+              </div>
+              <div style={{ background: '#f8fafc', borderRadius: 10, padding: '14px 16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: competencias.length > 0 ? 14 : 0, flexWrap: 'wrap' }}>
+                  {candidato.decision && (
+                    <Badge label={candidato.decision} config={DECISION_CONFIG} />
+                  )}
+                  {candidato.prescreen_entrevistador && (
+                    <span style={{ fontSize: 12, color: '#64748b' }}>
+                      Entrevistó: <strong>{candidato.prescreen_entrevistador}</strong>
+                    </span>
+                  )}
+                  {candidato.prescreen_fecha && (
+                    <span style={{ fontSize: 12, color: '#94a3b8' }}>{formatFecha(candidato.prescreen_fecha)}</span>
+                  )}
+                </div>
+
+                {/* Notas por competencia */}
+                {competencias.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {competencias.map((comp, i) => {
+                      const nota = candidato.prescreen_notas?.[i] || candidato.prescreen_notas?.[comp.nombre]
+                      const score = candidato.prescreen_scores?.[i] || candidato.prescreen_scores?.[comp.nombre]
+                      if (!nota && !score) return null
+                      return (
+                        <div key={i} style={{ borderTop: i === 0 ? 'none' : '1px solid #e2e8f0', paddingTop: i === 0 ? 0 : 10 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: nota ? 4 : 0 }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>{comp.nombre}</span>
+                            {score != null && (
+                              <span style={{ fontSize: 12, color: '#64748b', background: '#e2e8f0', padding: '1px 8px', borderRadius: 10 }}>
+                                {score}/5
+                              </span>
+                            )}
+                          </div>
+                          {nota && <div style={{ fontSize: 13, color: '#475569', lineHeight: 1.5 }}>{nota}</div>}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Sin datos de evaluación */}
+          {!candidato.notas && !prescreenHecho && (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8', fontSize: 13 }}>
+              El reclutador aún no ha agregado notas o evaluación para este candidato.
+            </div>
+          )}
+
+          {/* CV */}
+          {candidato.cv_url && (
+            <a
+              href={candidato.cv_url}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                background: '#1e3a5f', color: 'white', textDecoration: 'none',
+                borderRadius: 9, padding: '12px 0', fontSize: 14, fontWeight: 700,
+              }}
+            >
+              &#128196; Descargar CV
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -51,6 +189,8 @@ export default function Portal() {
   const [data, setData] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const [seleccionado, setSeleccionado] = useState(null)
+  const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null)
 
   useEffect(() => {
     async function cargar() {
@@ -189,23 +329,34 @@ export default function Portal() {
                           <th style={thStyle}>Candidato</th>
                           <th style={thStyle}>Ciudad</th>
                           <th style={thStyle}>Etapa</th>
-                          <th style={thStyle}>Score</th>
-                          <th style={{ ...thStyle, width: '38%' }}>Notas del reclutador</th>
+                          <th style={thStyle}>Evaluación</th>
+                          <th style={{ ...thStyle, width: 80, textAlign: 'center' }}></th>
                         </tr>
                       </thead>
                       <tbody>
                         {candidatos.map(c => (
-                          <tr key={c.id} style={{ borderTop: '1px solid #f1f5f9' }}>
+                          <tr
+                            key={c.id}
+                            style={{ borderTop: '1px solid #f1f5f9', cursor: 'pointer' }}
+                            onClick={() => { setSeleccionado(c); setVacanteSeleccionada(v) }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          >
                             <td style={tdStyle}>
                               <span style={{ fontWeight: 600, color: '#1e293b' }}>
                                 {c.nombre} {c.apellido}
                               </span>
                             </td>
                             <td style={{ ...tdStyle, color: '#64748b' }}>{c.ciudad || '—'}</td>
-                            <td style={tdStyle}><EtapaBadge etapa={c.etapa} /></td>
-                            <td style={tdStyle}><ScoreStars score={c.score} /></td>
-                            <td style={{ ...tdStyle, color: '#475569', fontStyle: c.notas ? 'italic' : 'normal' }}>
-                              {c.notas || <span style={{ color: '#cbd5e1' }}>—</span>}
+                            <td style={tdStyle}><Badge label={c.etapa} config={ETAPA_CONFIG} /></td>
+                            <td style={tdStyle}>
+                              {c.decision && c.decision !== 'Pendiente'
+                                ? <Badge label={c.decision} config={DECISION_CONFIG} />
+                                : <span style={{ color: '#cbd5e1', fontSize: 12 }}>—</span>
+                              }
+                            </td>
+                            <td style={{ ...tdStyle, textAlign: 'center' }}>
+                              <span style={{ fontSize: 12, color: '#2563eb', fontWeight: 600 }}>Ver →</span>
                             </td>
                           </tr>
                         ))}
@@ -222,6 +373,14 @@ export default function Portal() {
       <div style={{ marginTop: 40, textAlign: 'center', color: '#94a3b8', fontSize: 12 }}>
         Esta información es confidencial. No compartir con terceros.
       </div>
+
+      {seleccionado && (
+        <CandidatoModal
+          candidato={seleccionado}
+          vacante={vacanteSeleccionada}
+          onClose={() => { setSeleccionado(null); setVacanteSeleccionada(null) }}
+        />
+      )}
     </PortalLayout>
   )
 }

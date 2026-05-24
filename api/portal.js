@@ -24,8 +24,11 @@ export default async function handler(req, res) {
   const { data: vacantes, error: vacantesError } = await supabase
     .from('vacantes')
     .select(`
-      id, titulo, area, nivel, modalidad, ciudad, estatus, created_at,
-      candidatos ( id, nombre, apellido, ciudad, etapa, score, notas, decision, created_at )
+      id, titulo, area, nivel, modalidad, ciudad, estatus, created_at, prescreen_template,
+      candidatos (
+        id, nombre, apellido, ciudad, etapa, score, notas, decision, created_at,
+        cv_url, prescreen_scores, prescreen_notas, prescreen_fecha, prescreen_entrevistador
+      )
     `)
     .eq('cliente_id', cliente.id)
     .order('created_at', { ascending: false })
