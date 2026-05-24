@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import CareersLayout from './CareersLayout'
 import { getVacanteById } from '../../services/vacantesService'
 
@@ -73,8 +74,47 @@ export default function CareersDetail() {
     { text: vacante.area },
   ].filter(t => t.text && t.text.trim() !== '')
 
+  const descripcionSeo = (vacante.descripcion || resumen).slice(0, 200)
+  const fechaPublicacion = vacante.created_at ? vacante.created_at.split('T')[0] : new Date().toISOString().split('T')[0]
+
+  const jobSchema = {
+    '@context': 'https://schema.org/',
+    '@type': 'JobPosting',
+    title: vacante.titulo,
+    description: vacante.descripcion || resumen,
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: 'N&G Talent Consulting',
+      sameAs: window.location.origin + '/careers',
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: vacante.ciudad || 'Monterrey',
+        addressRegion: 'NL',
+        addressCountry: 'MX',
+      },
+    },
+    datePosted: fechaPublicacion,
+    employmentType: 'FULL_TIME',
+    ...(vacante.modalidad === 'Remoto' && { jobLocationType: 'TELECOMMUTE' }),
+    applicantLocationRequirements: { '@type': 'Country', name: 'Mexico' },
+    url: window.location.href,
+  }
+
   return (
     <CareersLayout>
+      <Helmet>
+        <title>{vacante.titulo} en {vacante.ciudad} | N&amp;G Talent Consulting</title>
+        <meta name="description" content={`Aplica como ${vacante.titulo} en ${cliente.nombre || 'empresa confidencial'}. ${vacante.ciudad} · ${vacante.modalidad} · ${vacante.nivel}. ${descripcionSeo}`} />
+        <meta property="og:title" content={`${vacante.titulo} | N&G Talent Consulting`} />
+        <meta property="og:description" content={`${vacante.ciudad} · ${vacante.modalidad} · ${vacante.nivel}`} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={window.location.href} />
+        <script type="application/ld+json">{JSON.stringify(jobSchema)}</script>
+      </Helmet>
+
       {/* Breadcrumb */}
       <button
         onClick={() => navigate('/careers')}

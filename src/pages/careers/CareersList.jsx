@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import CareersLayout from './CareersLayout'
 import { getVacantesPublicas } from '../../services/vacantesService'
 
@@ -31,6 +32,15 @@ export default function CareersList() {
 
   return (
     <CareersLayout>
+      <Helmet>
+        <title>Vacantes en Monterrey | N&amp;G Talent Consulting</title>
+        <meta name="description" content={`${vacantesPublicas.length} oportunidades de empleo en Monterrey y noreste de México. Reclutamiento especializado en ventas, operaciones, tecnología y más.`} />
+        <meta property="og:title" content="Vacantes en Monterrey | N&G Talent Consulting" />
+        <meta property="og:description" content="Encuentra las mejores oportunidades de empleo en Monterrey. Reclutamiento especializado." />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
       {/* Hero */}
       <div style={{ textAlign: 'center', marginBottom: 48 }}>
         <div style={{

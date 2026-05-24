@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /careers
+Disallow: /
+
+Sitemap: https://ng-consulting-ats.vercel.app/api/sitemap
