@@ -284,6 +284,12 @@ tr:hover td { background: var(--gray-50); }
   float: left;
   height: 0;
 }
+.tiptap-expandido .ProseMirror {
+  min-height: calc(90vh - 120px);
+  max-height: calc(90vh - 120px);
+  overflow-y: auto;
+  font-size: 15px;
+}
 
 /* ===== MUY PEQUEÑO (≤ 480px) ===== */
 @media (max-width: 480px) {
