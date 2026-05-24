@@ -5,6 +5,7 @@ import { useAuth } from '../lib/AuthContext'
 const navItems = [
   { path: '/', icon: '📊', label: 'Dashboard' },
   { path: '/clientes', icon: '🏢', label: 'Clientes' },
+  { path: '/banco-talento', icon: '🌟', label: 'Banco de Talento' },
 ]
 
 const herramientasItems = [

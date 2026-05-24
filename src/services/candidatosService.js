@@ -155,6 +155,17 @@ export async function copiarCandidato(candidatoOriginal, nuevaVacanteId) {
   return data
 }
 
+// Obtener candidatos espontáneos (sin vacante asignada)
+export async function getCandidatosEspontaneos() {
+  const { data, error } = await supabase
+    .from('candidatos')
+    .select('id, nombre, apellido, email, ciudad, fuente, area_interes, etapa, cv_url, created_at')
+    .is('vacante_id', null)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
 // Eliminar candidato (y su CV en storage si existe)
 export async function deleteCandidato(id, cvUrl) {
   if (cvUrl) {

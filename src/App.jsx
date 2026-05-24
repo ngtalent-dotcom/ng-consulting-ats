@@ -16,6 +16,8 @@ import PlantillasCompetencias from './pages/herramientas/PlantillasCompetencias'
 import Levantamiento from './pages/herramientas/Levantamiento'
 import Cobro from './pages/herramientas/Cobro'
 import LevantamientoPublico from './pages/levantamiento/LevantamientoPublico'
+import CareersApplyEspontanea from './pages/careers/CareersApplyEspontanea'
+import BancoTalento from './pages/BancoTalento'
 import './index.css'
 
 function Privado({ children }) {
@@ -38,6 +40,7 @@ function App() {
         <Routes>
           {/* Portales públicos — sin auth */}
           <Route path="/careers" element={<CareersList />} />
+          <Route path="/careers/espontanea" element={<CareersApplyEspontanea />} />
           <Route path="/careers/:vacanteId" element={<CareersDetail />} />
           <Route path="/careers/:vacanteId/apply" element={<CareersApply />} />
           <Route path="/portal/:token" element={<Portal />} />
@@ -60,6 +63,7 @@ function App() {
                   <Route path="/herramientas/plantillas" element={<PlantillasCompetencias />} />
                   <Route path="/herramientas/levantamiento" element={<Levantamiento />} />
                   <Route path="/herramientas/cobro" element={<Cobro />} />
+                  <Route path="/banco-talento" element={<BancoTalento />} />
                 </Routes>
               </Layout>
             </Privado>

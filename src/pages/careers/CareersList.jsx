@@ -174,18 +174,17 @@ export default function CareersList() {
             Envíanos tu CV y te avisamos cuando surja una oportunidad para tu perfil.
           </div>
         </div>
-        <a
-          href="mailto:reclutamiento@ngtalentconsulting.com.mx?subject=CV%20Espontaneo"
+        <button
+          onClick={() => navigate('/careers/espontanea')}
           style={{
-            display: 'inline-block',
             background: '#0ea5e9', color: 'white',
             padding: '12px 24px', borderRadius: 8,
             fontSize: 14, fontWeight: 600,
-            textDecoration: 'none', flexShrink: 0,
+            border: 'none', cursor: 'pointer', flexShrink: 0,
           }}
         >
-          Enviar CV por correo
-        </a>
+          Enviar mi CV →
+        </button>
       </div>
     </CareersLayout>
   )

@@ -91,6 +91,8 @@
     "TELECOMMUTE", "accentColor",
     "generarPDFCobro", "descargarPDF", "descargarTxt",
     "textoEnvuelto", "formatFechaPDF", "formatMontoPDF",
-    "AZUL_OSCURO", "didParseCell"
+    "AZUL_OSCURO", "didParseCell",
+    "espontanea", "BancoTalento", "getCandidatosEspontaneos", "areaInteres", "area_interes",
+    "diasDesde", "esNuevo", "filtroArea", "areasInteres"
   ]
 }
