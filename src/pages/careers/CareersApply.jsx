@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import CareersLayout from './CareersLayout'
 import { getVacanteById } from '../../services/vacantesService'
-import { createCandidato, uploadCV } from '../../services/candidatosService'
+import { createCandidatoPublico, uploadCV } from '../../services/candidatosService'
 
 const fuentes = ['LinkedIn', 'Indeed', 'OCC Mundial', 'Referido', 'Bolsa de trabajo universitaria', 'Otro']
 
@@ -104,7 +104,7 @@ export default function CareersApply() {
       }
 
       // 2. Guardar candidato en la base de datos
-      await createCandidato({
+      await createCandidatoPublico({
         vacante_id: vacante.id,
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),

@@ -22,7 +22,7 @@ export async function getCandidatoById(id) {
   return data
 }
 
-// Crear candidato (desde portal público)
+// Crear candidato (desde ATS interno — requiere sesión autenticada)
 export async function createCandidato(candidato) {
   const { data, error } = await supabase
     .from('candidatos')
@@ -31,6 +31,14 @@ export async function createCandidato(candidato) {
     .single()
   if (error) throw error
   return data
+}
+
+// Crear candidato desde el portal público de careers (usuario anónimo — sin select de regreso)
+export async function createCandidatoPublico(candidato) {
+  const { error } = await supabase
+    .from('candidatos')
+    .insert([candidato])
+  if (error) throw error
 }
 
 // Subir CV a Supabase Storage y devolver URL pública
