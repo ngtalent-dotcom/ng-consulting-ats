@@ -61,31 +61,44 @@ export function descargarLevantamientoParaClaude(lev) {
 
   const prompt = `
 ${'═'.repeat(60)}
-PROMPT SUGERIDO PARA CLAUDE
+PROMPT PARA CLAUDE — DESCRIPCIÓN DE PUESTO
 ${'═'.repeat(60)}
 
-Con base en el levantamiento de perfil de puesto anterior, por favor ayúdame con lo siguiente:
+Con los datos del levantamiento de arriba, genera una Descripción de
+Puesto profesional en Markdown lista para revisar con el cliente.
+Incluye estas secciones en este orden:
 
-1. DESCRIPCIÓN DE VACANTE
-   Redacta la descripción completa del puesto lista para publicar en LinkedIn.
-   Incluye: resumen del puesto, responsabilidades principales, requisitos,
-   lo que ofrecemos y cómo aplicar.
+1. SOBRE LA EMPRESA
+   2 líneas de contexto. Si no hay info, marca con 📝.
 
-2. PERFIL DEL CANDIDATO
-   Define en 4-5 líneas el perfil ideal del candidato (quién es, qué sabe
-   hacer, qué experiencia tiene, cómo piensa).
+2. RESUMEN DEL ROL
+   3 párrafos: quién buscan, qué hará, qué hace único este rol.
 
-3. COMPETENCIAS CLAVE
-   Lista las 5 competencias más importantes que debe tener esta persona,
-   explicando brevemente por qué cada una es crítica para este rol.
+3. RESPONSABILIDADES CLAVE
+   6–9 bullets en infinitivo.
 
-4. PREGUNTAS DE ENTREVISTA
-   Sugiere 8 preguntas específicas para este perfil, incluyendo preguntas
-   conductuales (STAR) y situacionales. Agrupa por competencia.
+4. REQUISITOS OBLIGATORIOS
+   Escolaridad, experiencia mínima, herramientas. Lo que es indispensable.
 
-5. RED FLAGS
-   ¿Qué señales de alerta debería buscar durante el proceso de selección
-   para este tipo de perfil?
+5. CALIFICACIONES DESEADAS
+   3–5 nice-to-haves.
+
+6. COMPETENCIAS BLANDAS CLAVE
+   3–4 con una línea de descripción cada una.
+
+7. CÓMO SE VE EL ÉXITO
+   A 3 y 6 meses. Si faltan métricas, agrega nota 📝.
+
+8. LO QUE OFRECEMOS
+   Sueldo + prestaciones + 4–5 razones aspiracionales para unirse.
+
+9. OPCIONES DE TÍTULO PARA PUBLICAR
+   5 variantes del título del puesto pensadas para LinkedIn.
+
+TONO: Profesional, aspiracional y cercano. Español neutro mexicano.
+Marca con 📝 cualquier dato que falte o necesite confirmación.
+
+*N&G Talent Consulting — Consultor: Gustavo Martínez Navejar*
 `
 
   const contenido = cuerpo + '\n' + prompt
@@ -156,28 +169,32 @@ export function descargarPrescreenParaClaude(candidato, vacante) {
 
   const prompt = `
 ${'═'.repeat(60)}
-PROMPT SUGERIDO PARA CLAUDE
+PROMPT PARA CLAUDE — ANÁLISIS DE PRE-SCREEN
 ${'═'.repeat(60)}
 
-Con base en el reporte de pre-screen anterior de ${nombre}, por favor dame:
+Con los datos del pre-screen de arriba, genera un reporte de análisis
+estructurado con las siguientes secciones:
 
-1. RESUMEN EJECUTIVO
-   Resume el perfil del candidato en 4-5 líneas: quién es, qué experiencia
-   tiene, cuáles son sus fortalezas y qué lo hace relevante para esta vacante.
+1. RESUMEN EJECUTIVO (4–5 líneas)
+   Quién es el candidato, qué experiencia tiene y por qué es (o no) relevante
+   para este puesto específico.
 
-2. FORTALEZAS DETECTADAS
-   Lista las 3 fortalezas más relevantes basándote en los scores y notas.
+2. FORTALEZAS DETECTADAS (3 puntos con ▸)
+   Basadas en los scores altos y en las notas cualitativas positivas.
 
-3. ÁREAS DE RIESGO O MEJORA
-   ¿Qué aspectos podrían ser un riesgo? ¿Qué preguntas quedan sin resolver?
+3. ÁREAS DE RIESGO O MEJORA (máx. 3 puntos)
+   Inconsistencias, señales de alerta, scores bajos o preguntas sin respuesta.
 
 4. RECOMENDACIÓN FINAL
-   ¿Deberías avanzar con este candidato? ¿Bajo qué condiciones o con qué
-   reservas? Sé directo y justifica tu postura.
+   Directa y justificada. Usa el score como base pero matiza con el análisis
+   cualitativo. Indica si debe avanzar y bajo qué condiciones.
+   Referencia de decisión: 80–100% → Fuerte ✅ | 60–79% → Viable con reservas ⚠️ | <60% → No apto ❌
 
-5. PREGUNTAS DE SEGUIMIENTO
-   Sugiere 3-5 preguntas específicas para hacerle al candidato en la
-   entrevista con el cliente, basadas en los gaps o áreas de interés.
+5. PREGUNTAS DE SEGUIMIENTO PARA ENTREVISTA CON CLIENTE (5 preguntas)
+   Específicas a este candidato, orientadas a cerrar los gaps detectados.
+   Para cada una indica brevemente qué área explora.
+
+*N&G Talent Consulting — Consultor: Gustavo Martínez Navejar*
 `
 
   const contenido = cuerpo + '\n' + prompt

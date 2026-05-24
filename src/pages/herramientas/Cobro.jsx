@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { generarPDFCobro } from '../../services/pdfService'
 
 const SERVICIOS_CATALOGO = [
   {
@@ -70,6 +71,15 @@ export default function Cobro() {
   const [copiado, setCopiado] = useState(false)
 
   const set = campo => e => setForm(prev => ({ ...prev, [campo]: e.target.value }))
+
+  // Aviso al refrescar o salir si hay datos capturados
+  useEffect(() => {
+    const hayDatos = form.candidatoNombre || form.cliente || form.puesto || form.salarioMensual || form.fechaFirma
+    if (!hayDatos) return
+    const handler = e => { e.preventDefault(); e.returnValue = '' }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [form])
 
   const toggleServicio = id => {
     setForm(prev => ({
@@ -154,7 +164,11 @@ export default function Cobro() {
     })
   }
 
-  function descargarTexto() {
+  function descargarPDF() {
+    generarPDFCobro({ form, salarioAnual, comisionMonto, fechaFinGarantia, serviciosSeleccionados, textoDocumento })
+  }
+
+  function descargarTxt() {
     const blob = new Blob([textoDocumento], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -294,8 +308,11 @@ export default function Cobro() {
                 >
                   {copiado ? '✓ Copiado' : '📋 Copiar'}
                 </button>
-                <button type="button" className="btn btn-secondary btn-sm" onClick={descargarTexto}>
-                  ⬇ Descargar .txt
+                <button type="button" className="btn btn-primary btn-sm" onClick={descargarPDF}>
+                  ⬇ Descargar PDF
+                </button>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={descargarTxt} title="Descargar como texto plano">
+                  .txt
                 </button>
               </div>
             </div>

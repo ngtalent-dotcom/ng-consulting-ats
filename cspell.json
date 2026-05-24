@@ -88,6 +88,9 @@
     "fechaFirma", "garantiaMeses", "fechaFinGarantia",
     "entrevistadores", "firmante", "sumarMeses", "formatMonto",
     "descargarTexto", "copiarTexto", "textoDocumento",
-    "TELECOMMUTE", "accentColor"
+    "TELECOMMUTE", "accentColor",
+    "generarPDFCobro", "descargarPDF", "descargarTxt",
+    "textoEnvuelto", "formatFechaPDF", "formatMontoPDF",
+    "AZUL_OSCURO", "didParseCell"
   ]
 }
