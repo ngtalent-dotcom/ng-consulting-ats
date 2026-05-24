@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 export default async function handler(req, res) {
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  const supabase = createClient(process.env.VITE_SUPABASE_URL, serviceKey)
+  const supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
 
   const { data: vacantes } = await supabase
     .from('vacantes')
