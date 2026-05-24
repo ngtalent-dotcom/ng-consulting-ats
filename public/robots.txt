@@ -2,4 +2,4 @@ User-agent: *
 Allow: /careers
 Disallow: /
 
-Sitemap: https://ng-consulting-ats.vercel.app/api/sitemap
+Sitemap: https://www.ngtalentconsulting.com.mx/api/sitemap
