@@ -69,6 +69,18 @@
     "ProseMirror", "toggleBold", "toggleItalic", "toggleUnderline",
     "toggleHeading", "toggleBulletList", "toggleOrderedList",
     "unsetAllMarks", "clearNodes", "setContent", "getHTML",
-    "bulletList", "orderedList", "hardBreak"
+    "bulletList", "orderedList", "hardBreak",
+    "levantamiento", "levantamientos", "levantamientoService",
+    "plantillas", "plantillasService", "PlantillasCompetencias",
+    "LevantamientoPublico", "slugify",
+    "tituloPuesto", "clienteNombre", "completado", "completar",
+    "contactoNombre", "contactoCargo", "numVacantes",
+    "setModalMensaje", "mensajeAsunto", "mensajeCuerpo", "enviandoMensaje", "mensajeEnviado", "errorMensaje",
+    "handleEnviarMensaje", "herramientas", "competencias", "CompetenciaItem",
+    "agregarCompetencia", "actualizarCompetencia", "eliminarCompetencia",
+    "moverArriba", "moverAbajo", "esNueva",
+    "copiarEnlace", "copiado", "verDatos", "ModalVerDatos",
+    "prestaciones", "escolaridad", "habilidades", "modalidad",
+    "planeacion", "inventarios"
   ]
 }

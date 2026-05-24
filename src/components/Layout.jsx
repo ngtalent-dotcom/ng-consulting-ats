@@ -7,6 +7,11 @@ const navItems = [
   { path: '/clientes', icon: '🏢', label: 'Clientes' },
 ]
 
+const herramientasItems = [
+  { path: '/herramientas/plantillas', icon: '📋', label: 'Plantillas de competencias' },
+  { path: '/herramientas/levantamiento', icon: '📝', label: 'Levantamiento de perfil' },
+]
+
 export default function Layout({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
@@ -47,16 +52,16 @@ export default function Layout({ children }) {
           ))}
 
           <div className="nav-section-label">Herramientas</div>
-          <button className="nav-item" style={{ opacity: 0.5, cursor: 'not-allowed' }}>
-            <span className="icon">📋</span>
-            Pre-screen
-            <span style={{ marginLeft: 'auto', fontSize: 10, background: 'rgba(255,255,255,0.15)', padding: '1px 6px', borderRadius: 10 }}>Pronto</span>
-          </button>
-          <button className="nav-item" style={{ opacity: 0.5, cursor: 'not-allowed' }}>
-            <span className="icon">📄</span>
-            Reportes
-            <span style={{ marginLeft: 'auto', fontSize: 10, background: 'rgba(255,255,255,0.15)', padding: '1px 6px', borderRadius: 10 }}>Pronto</span>
-          </button>
+          {herramientasItems.map((item) => (
+            <button
+              key={item.path}
+              className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+              onClick={() => navegar(item.path)}
+            >
+              <span className="icon">{item.icon}</span>
+              {item.label}
+            </button>
+          ))}
 
           <div className="nav-section-label">Portal</div>
           <button

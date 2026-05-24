@@ -39,6 +39,12 @@ export default function Candidato() {
   const [guardandoNota, setGuardandoNota] = useState(false)
   const [modalMoverCopiar, setModalMoverCopiar] = useState(false)
   const [copiaCreada, setCopiaCreada] = useState(null)
+  const [modalMensaje, setModalMensaje] = useState(false)
+  const [mensajeAsunto, setMensajeAsunto] = useState('')
+  const [mensajeCuerpo, setMensajeCuerpo] = useState('')
+  const [enviandoMensaje, setEnviandoMensaje] = useState(false)
+  const [mensajeEnviado, setMensajeEnviado] = useState(false)
+  const [errorMensaje, setErrorMensaje] = useState('')
 
   useEffect(() => {
     async function cargar() {
@@ -57,6 +63,43 @@ export default function Candidato() {
     }
     cargar()
   }, [candidatoId])
+
+  async function handleEnviarMensaje() {
+    setErrorMensaje('')
+    if (!mensajeAsunto.trim() || !mensajeCuerpo.trim()) {
+      setErrorMensaje('El asunto y el mensaje son requeridos.')
+      return
+    }
+    setEnviandoMensaje(true)
+    try {
+      const resp = await fetch('/api/enviar-mensaje', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          candidatoEmail: candidato.email,
+          candidatoNombre: candidato.nombre,
+          asunto: mensajeAsunto.trim(),
+          mensaje: mensajeCuerpo.trim(),
+          reclutadorNombre: 'Equipo N&G Talent Consulting',
+        }),
+      })
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => ({}))
+        throw new Error(data.error || 'Error al enviar')
+      }
+      setMensajeEnviado(true)
+      setTimeout(() => {
+        setModalMensaje(false)
+        setMensajeAsunto('')
+        setMensajeCuerpo('')
+        setMensajeEnviado(false)
+      }, 2000)
+    } catch (err) {
+      setErrorMensaje(err.message || 'Error al enviar el mensaje.')
+    } finally {
+      setEnviandoMensaje(false)
+    }
+  }
 
   if (cargando) {
     return (
@@ -511,12 +554,9 @@ export default function Candidato() {
                 <button className="btn btn-secondary" onClick={() => setModalMoverCopiar(true)}>
                   &#8599; Mover / Copiar a otra vacante
                 </button>
-                <button className="btn btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                <button className="btn btn-secondary" onClick={() => { setModalMensaje(true); setMensajeAsunto(''); setMensajeCuerpo(''); setMensajeEnviado(false); setErrorMensaje('') }}>
                   &#9993; Enviar mensaje
                 </button>
-              </div>
-              <div style={{ marginTop: 10, fontSize: 11.5, color: 'var(--gray-400)' }}>
-                Reporte PDF y mensajes estarán disponibles en próximas fases.
               </div>
             </div>
           </div>
@@ -658,6 +698,65 @@ export default function Candidato() {
           candidato={candidato}
           onExito={handleMoverCopiarExito}
         />
+      )}
+
+      {modalMensaje && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(15,23,42,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 24,
+        }}>
+          <div style={{ background: 'white', borderRadius: 12, width: '100%', maxWidth: 520, boxShadow: '0 24px 80px rgba(0,0,0,0.2)', border: '1px solid #e2e8f0' }}>
+            <div style={{ padding: '18px 22px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#1e293b' }}>&#9993; Enviar mensaje</div>
+                <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>Para: {candidato.nombre} · {candidato.email}</div>
+              </div>
+              <button type="button" onClick={() => setModalMensaje(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8', lineHeight: 1 }}>×</button>
+            </div>
+
+            {mensajeEnviado ? (
+              <div style={{ padding: '40px 24px', textAlign: 'center' }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#d1fae5', color: '#059669', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontWeight: 700 }}>✓</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>Mensaje enviado correctamente</div>
+              </div>
+            ) : (
+              <div style={{ padding: '20px 22px' }}>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.05em' }}>Asunto</label>
+                  <input
+                    value={mensajeAsunto}
+                    onChange={e => setMensajeAsunto(e.target.value)}
+                    placeholder="Ej: Siguiente paso en tu proceso de selección"
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: 7, border: '1.5px solid #e2e8f0', fontSize: 13, fontFamily: 'inherit', color: '#1e293b', outline: 'none', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.05em' }}>Mensaje</label>
+                  <textarea
+                    value={mensajeCuerpo}
+                    onChange={e => setMensajeCuerpo(e.target.value)}
+                    placeholder={`Hola ${candidato.nombre},\n\n`}
+                    rows={6}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: 7, border: '1.5px solid #e2e8f0', fontSize: 13, fontFamily: 'inherit', color: '#1e293b', outline: 'none', resize: 'vertical', lineHeight: 1.6, boxSizing: 'border-box' }}
+                  />
+                </div>
+                {errorMensaje && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, padding: '9px 13px', fontSize: 12, marginBottom: 14 }}>
+                    {errorMensaje}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 9, justifyContent: 'flex-end' }}>
+                  <button className="btn btn-secondary" onClick={() => setModalMensaje(false)}>Cancelar</button>
+                  <button className="btn btn-primary" onClick={handleEnviarMensaje} disabled={enviandoMensaje}>
+                    {enviandoMensaje ? 'Enviando...' : 'Enviar mensaje'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </>
   )

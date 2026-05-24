@@ -12,6 +12,9 @@ import CareersDetail from './pages/careers/CareersDetail'
 import CareersApply from './pages/careers/CareersApply'
 import Portal from './pages/portal/Portal'
 import PortalVacante from './pages/portal/PortalVacante'
+import PlantillasCompetencias from './pages/herramientas/PlantillasCompetencias'
+import Levantamiento from './pages/herramientas/Levantamiento'
+import LevantamientoPublico from './pages/levantamiento/LevantamientoPublico'
 import './index.css'
 
 function Privado({ children }) {
@@ -38,6 +41,7 @@ function App() {
           <Route path="/careers/:vacanteId/apply" element={<CareersApply />} />
           <Route path="/portal/:token" element={<Portal />} />
           <Route path="/portal-vacante/:token" element={<PortalVacante />} />
+          <Route path="/levantamiento/:token" element={<LevantamientoPublico />} />
 
           {/* Login */}
           <Route path="/login" element={<Login />} />
@@ -52,6 +56,8 @@ function App() {
                   <Route path="/clientes/:clienteId/vacantes" element={<Vacantes />} />
                   <Route path="/vacantes/:vacanteId/pipeline" element={<Pipeline />} />
                   <Route path="/candidatos/:candidatoId" element={<Candidato />} />
+                  <Route path="/herramientas/plantillas" element={<PlantillasCompetencias />} />
+                  <Route path="/herramientas/levantamiento" element={<Levantamiento />} />
                 </Routes>
               </Layout>
             </Privado>
