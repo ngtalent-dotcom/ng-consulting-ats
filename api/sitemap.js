@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   let debugInfo = null
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/vacantes?select=id,updated_at&publicada=eq.true&estatus=eq.Activa`,
+      `${supabaseUrl}/rest/v1/vacantes?select=id,created_at&publicada=eq.true&estatus=eq.Activa`,
       {
         headers: {
           apikey: anonKey,
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   const urls = [
     `<url><loc>${base}/careers</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`,
     ...vacantes.map(v => {
-      const fecha = v.updated_at ? v.updated_at.split('T')[0] : ''
+      const fecha = v.created_at ? v.created_at.split('T')[0] : ''
       return `<url><loc>${base}/careers/${v.id}</loc>${fecha ? `<lastmod>${fecha}</lastmod>` : ''}<changefreq>weekly</changefreq><priority>0.8</priority></url>`
     }),
   ].join('\n  ')
