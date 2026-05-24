@@ -249,11 +249,11 @@ export default function Pipeline() {
       <div className="page-header">
         <div>
           <div className="breadcrumb" style={{ marginBottom: 2 }}>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/clientes')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/clientes')}>
               &#8592; Clientes
             </button>
             <span className="breadcrumb-sep">/</span>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/clientes/' + vacante.cliente_id + '/vacantes')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/clientes/' + vacante.cliente_id + '/vacantes')}>
               {cliente?.nombre}
             </button>
             <span className="breadcrumb-sep">/</span>
@@ -417,7 +417,7 @@ export default function Pipeline() {
                   key={etapa}
                   etapa={etapa}
                   candidatos={candidatosFiltrados.filter(c => c.etapa === etapa)}
-                  onCardClick={(id) => navigate('/candidatos/' + id)}
+                  onCardClick={(id) => navigate('/app/candidatos/' + id)}
                 />
               ))}
               <div className="kanban-col" style={{ opacity: 0.7 }}>
@@ -432,7 +432,7 @@ export default function Pipeline() {
                   <div
                     key={c.id}
                     className="kanban-card"
-                    onClick={() => navigate('/candidatos/' + c.id)}
+                    onClick={() => navigate('/app/candidatos/' + c.id)}
                     style={{ opacity: 0.7 }}
                   >
                     <div className="kanban-card-name">{c.nombre} {c.apellido || ''}</div>
@@ -465,7 +465,7 @@ export default function Pipeline() {
                     const etapaColor = etapaColors[c.etapa] || '#6366f1'
                     const decColor = decisionColors[c.decision] || '#9ca3af'
                     return (
-                      <tr key={c.id} className="clickable-row" onClick={() => navigate('/candidatos/' + c.id)}>
+                      <tr key={c.id} className="clickable-row" onClick={() => navigate('/app/candidatos/' + c.id)}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
@@ -513,7 +513,7 @@ export default function Pipeline() {
                         <td>
                           <button
                             className="btn btn-ghost btn-sm"
-                            onClick={(e) => { e.stopPropagation(); navigate('/candidatos/' + c.id) }}
+                            onClick={(e) => { e.stopPropagation(); navigate('/app/candidatos/' + c.id) }}
                           >
                             Ver &#8594;
                           </button>

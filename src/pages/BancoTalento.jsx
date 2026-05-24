@@ -192,7 +192,7 @@ export default function BancoTalento() {
                     <td style={{ padding: '13px 16px' }}>
                       <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                         <button
-                          onClick={() => navigate('/candidatos/' + c.id)}
+                          onClick={() => navigate('/app/candidatos/' + c.id)}
                           style={{
                             background: '#f1f5f9', color: '#334155',
                             border: '1px solid #e2e8f0', borderRadius: 7,

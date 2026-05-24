@@ -163,7 +163,7 @@ export default function Clientes() {
                     <tr
                       key={c.id}
                       className="clickable-row"
-                      onClick={() => navigate('/clientes/' + c.id + '/vacantes')}
+                      onClick={() => navigate('/app/clientes/' + c.id + '/vacantes')}
                     >
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -196,7 +196,7 @@ export default function Clientes() {
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
                           <button
                             className="btn btn-secondary btn-sm"
-                            onClick={() => navigate('/clientes/' + c.id + '/vacantes')}
+                            onClick={() => navigate('/app/clientes/' + c.id + '/vacantes')}
                           >
                             Ver vacantes &#8594;
                           </button>

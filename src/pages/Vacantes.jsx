@@ -106,7 +106,7 @@ export default function Vacantes() {
       <div className="page-header">
         <div>
           <div className="breadcrumb" style={{ marginBottom: 2 }}>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/clientes')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/clientes')}>
               &#8592; Clientes
             </button>
             <span className="breadcrumb-sep">/</span>
@@ -213,7 +213,7 @@ export default function Vacantes() {
               <div
                 key={v.id}
                 className="vacante-card"
-                onClick={() => navigate('/vacantes/' + v.id + '/pipeline')}
+                onClick={() => navigate('/app/vacantes/' + v.id + '/pipeline')}
               >
                 <div className="vacante-card-title">{v.titulo}</div>
                 <div className="vacante-card-meta">

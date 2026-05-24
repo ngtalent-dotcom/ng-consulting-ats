@@ -3,16 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/AuthContext'
 
 const navItems = [
-  { path: '/', icon: '📊', label: 'Dashboard' },
-  { path: '/clientes', icon: '🏢', label: 'Clientes' },
-  { path: '/banco-talento', icon: '🌟', label: 'Banco de Talento' },
+  { path: '/app', icon: '📊', label: 'Dashboard' },
+  { path: '/app/clientes', icon: '🏢', label: 'Clientes' },
+  { path: '/app/banco-talento', icon: '🌟', label: 'Banco de Talento' },
 ]
 
 const herramientasItems = [
-  { path: '/herramientas/plantillas', icon: '📋', label: 'Plantillas de competencias' },
-  { path: '/herramientas/levantamiento', icon: '📝', label: 'Levantamiento de perfil' },
-  { path: '/herramientas/cobro', icon: '💰', label: 'Generador de cobro' },
-  { path: '/herramientas/metricas', icon: '📈', label: 'Métricas' },
+  { path: '/app/herramientas/plantillas', icon: '📋', label: 'Plantillas de competencias' },
+  { path: '/app/herramientas/levantamiento', icon: '📝', label: 'Levantamiento de perfil' },
+  { path: '/app/herramientas/cobro', icon: '💰', label: 'Generador de cobro' },
+  { path: '/app/herramientas/metricas', icon: '📈', label: 'Métricas' },
 ]
 
 export default function Layout({ children }) {
@@ -22,7 +22,7 @@ export default function Layout({ children }) {
   const [menuAbierto, setMenuAbierto] = useState(false)
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/'
+    if (path === '/app') return location.pathname === '/app'
     return location.pathname.startsWith(path)
   }
 

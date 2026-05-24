@@ -207,7 +207,7 @@ function SeccionVacantes({ datos, cargando, navigate }) {
                   <tr
                     key={v.id}
                     className="clickable-row"
-                    onClick={() => navigate('/vacantes/' + v.id + '/pipeline')}
+                    onClick={() => navigate('/app/vacantes/' + v.id + '/pipeline')}
                   >
                     <td>
                       <div style={{ fontWeight: 600, color: 'var(--gray-800)', fontSize: 13 }}>{v.titulo}</div>
@@ -407,7 +407,7 @@ export default function Dashboard() {
             <div className="card">
               <div className="card-header">
                 <div className="card-title">Clientes</div>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/clientes')}>Ver todos</button>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/app/clientes')}>Ver todos</button>
               </div>
               {cargando ? (
                 <div style={{ color: '#94a3b8', fontSize: 13, padding: '12px 0' }}>Cargando...</div>
@@ -417,7 +417,7 @@ export default function Dashboard() {
                     <thead><tr><th>Cliente</th><th>Alta</th></tr></thead>
                     <tbody>
                       {datos?.clientes?.map(c => (
-                        <tr key={c.id} className="clickable-row" onClick={() => navigate('/clientes/' + c.id + '/vacantes')}>
+                        <tr key={c.id} className="clickable-row" onClick={() => navigate('/app/clientes/' + c.id + '/vacantes')}>
                           <td>
                             <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{c.nombre}</div>
                             <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{c.industria}</div>
@@ -451,7 +451,7 @@ export default function Dashboard() {
                       <div
                         key={c.id}
                         style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: '1px solid var(--gray-100)', cursor: 'pointer' }}
-                        onClick={() => navigate('/candidatos/' + c.id)}
+                        onClick={() => navigate('/app/candidatos/' + c.id)}
                       >
                         <div className="avatar" style={{ width: 32, height: 32, fontSize: 11 }}>
                           {getInitials(c.nombre)}

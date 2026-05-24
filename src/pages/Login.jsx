@@ -11,7 +11,7 @@ export default function Login() {
   const [cargando, setCargando] = useState(false)
 
   if (cargandoAuth) return null
-  if (session) return <Navigate to="/" replace />
+  if (session) return <Navigate to="/app" replace />
 
   async function handleSubmit(e) {
     e.preventDefault()

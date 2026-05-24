@@ -199,7 +199,7 @@ export default function Candidato() {
 
   const handleEliminar = async () => {
     await deleteCandidato(candidato.id, candidato.cv_url)
-    navigate('/vacantes/' + candidato.vacante_id + '/pipeline')
+    navigate('/app/vacantes/' + candidato.vacante_id + '/pipeline')
   }
 
   const handleMoverCopiarExito = async (operacion, nuevoCandidato, vacanteDestino) => {
@@ -216,15 +216,15 @@ export default function Candidato() {
       <div className="page-header">
         <div>
           <div className="breadcrumb" style={{ marginBottom: 2 }}>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/clientes')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/clientes')}>
               &#8592; Clientes
             </button>
             <span className="breadcrumb-sep">/</span>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/clientes/' + (vacante.cliente_id || '') + '/vacantes')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/clientes/' + (vacante.cliente_id || '') + '/vacantes')}>
               {cliente.nombre || '—'}
             </button>
             <span className="breadcrumb-sep">/</span>
-            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/vacantes/' + (candidato.vacante_id || '') + '/pipeline')}>
+            <button className="back-btn" style={{ padding: '2px 6px' }} onClick={() => navigate('/app/vacantes/' + (candidato.vacante_id || '') + '/pipeline')}>
               {vacante.titulo || 'Pipeline'}
             </button>
             <span className="breadcrumb-sep">/</span>
@@ -259,7 +259,7 @@ export default function Candidato() {
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 className="btn btn-sm btn-primary"
-                onClick={() => navigate('/candidatos/' + copiaCreada.id)}
+                onClick={() => navigate('/app/candidatos/' + copiaCreada.id)}
               >
                 Ver copia &#8594;
               </button>

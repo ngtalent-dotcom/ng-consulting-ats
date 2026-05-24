@@ -53,8 +53,11 @@ function App() {
           {/* Login */}
           <Route path="/login" element={<Login />} />
 
+          {/* Temporal hasta que exista la landing */}
+          <Route path="/" element={<Navigate to="/app" replace />} />
+
           {/* ATS interno — requiere sesión */}
-          <Route path="/*" element={
+          <Route path="/app/*" element={
             <Privado>
               <Layout>
                 <Routes>

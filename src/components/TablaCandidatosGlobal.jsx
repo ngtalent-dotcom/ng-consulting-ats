@@ -272,7 +272,7 @@ export default function TablaCandidatosGlobal() {
                   const etEst = etapaBadge[c.etapa] || { bg: '#f1f5f9', color: '#475569' }
                   const scCol = scoreColor(c.score)
                   return (
-                    <tr key={c.id} className="clickable-row" onClick={() => navigate('/candidatos/' + c.id)}>
+                    <tr key={c.id} className="clickable-row" onClick={() => navigate('/app/candidatos/' + c.id)}>
                       <td>
                         <div style={{ fontWeight: 600, color: '#1e293b', fontSize: 13 }}>
                           {c.nombre} {c.apellido || ''}
