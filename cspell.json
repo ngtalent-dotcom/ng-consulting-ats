@@ -64,6 +64,11 @@
     "RichTextEditor", "bold", "italic", "underline",
     "helmet", "Helmet", "HelmetProvider",
     "JobPosting", "PostalAddress", "TELECOMMUTE", "FULL_TIME",
-    "sitemap", "noindex", "canonical"
+    "sitemap", "noindex", "canonical",
+    "tiptap", "Tiptap", "StarterKit", "EditorContent", "useEditor",
+    "ProseMirror", "toggleBold", "toggleItalic", "toggleUnderline",
+    "toggleHeading", "toggleBulletList", "toggleOrderedList",
+    "unsetAllMarks", "clearNodes", "setContent", "getHTML",
+    "bulletList", "orderedList", "hardBreak"
   ]
 }

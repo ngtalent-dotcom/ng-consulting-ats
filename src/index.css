@@ -258,6 +258,33 @@ tr:hover td { background: var(--gray-50); }
   .careers-titulo-hero { font-size: 26px; }
 }
 
+/* ===== TIPTAP EDITOR ===== */
+.tiptap-editor .ProseMirror {
+  padding: 12px 14px;
+  outline: none;
+  font-size: 14px;
+  color: #1e293b;
+  line-height: 1.7;
+  font-family: inherit;
+}
+.tiptap-editor .ProseMirror p { margin: 0 0 8px; }
+.tiptap-editor .ProseMirror p:last-child { margin-bottom: 0; }
+.tiptap-editor .ProseMirror h2 { font-size: 16px; font-weight: 700; color: #1e293b; margin: 12px 0 6px; }
+.tiptap-editor .ProseMirror h3 { font-size: 14px; font-weight: 700; color: #334155; margin: 10px 0 4px; }
+.tiptap-editor .ProseMirror ul { padding-left: 20px; margin: 6px 0; }
+.tiptap-editor .ProseMirror ol { padding-left: 20px; margin: 6px 0; }
+.tiptap-editor .ProseMirror li { margin-bottom: 3px; }
+.tiptap-editor .ProseMirror strong { font-weight: 700; }
+.tiptap-editor .ProseMirror em { font-style: italic; }
+.tiptap-editor .ProseMirror u { text-decoration: underline; }
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
 /* ===== MUY PEQUEÑO (≤ 480px) ===== */
 @media (max-width: 480px) {
   .page-body { padding: 10px 12px; }
