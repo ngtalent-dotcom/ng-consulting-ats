@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /careers
-Allow: /api/sitemap
+Allow: /sitemap.xml
 Disallow: /
 
-Sitemap: https://www.ngtalentconsulting.com.mx/api/sitemap
+Sitemap: https://www.ngtalentconsulting.com.mx/sitemap.xml
