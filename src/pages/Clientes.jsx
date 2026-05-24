@@ -40,15 +40,24 @@ export default function Clientes() {
 
   const handleCompartirPortal = async (e, c) => {
     e.stopPropagation()
-    let token = c.portal_token
-    if (!token) {
-      token = await regenerarTokenPortal(c.id)
-      setClientes(prev => prev.map(cl => cl.id === c.id ? { ...cl, portal_token: token } : cl))
+    try {
+      let token = c.portal_token
+      if (!token) {
+        token = await regenerarTokenPortal(c.id)
+        setClientes(prev => prev.map(cl => cl.id === c.id ? { ...cl, portal_token: token } : cl))
+      }
+      const url = `${window.location.origin}/portal/${token}`
+      try {
+        await navigator.clipboard.writeText(url)
+        setCopiandoId(c.id)
+        setTimeout(() => setCopiandoId(null), 2000)
+      } catch {
+        window.prompt('Copia este enlace para compartir con el cliente:', url)
+      }
+    } catch (err) {
+      console.error('Error al obtener token del portal:', err)
+      alert('Error al generar el enlace. Asegúrate de haber corrido la migración migration_portal.sql en Supabase.')
     }
-    const url = `${window.location.origin}/portal/${token}`
-    await navigator.clipboard.writeText(url)
-    setCopiandoId(c.id)
-    setTimeout(() => setCopiandoId(null), 2000)
   }
 
   const handleConfirmarEliminar = async () => {

@@ -299,6 +299,20 @@ export default function Pipeline() {
               <div className="info-label">Candidatos</div>
               <div className="info-value">{candidatosList.length} en proceso</div>
             </div>
+            {vacante.hiring_manager && (
+              <div style={{ borderLeft: '1px solid #f1f5f9', paddingLeft: 28, marginLeft: 4 }}>
+                <div className="info-label">Hiring Manager</div>
+                <div className="info-value" style={{ fontWeight: 600 }}>{vacante.hiring_manager}</div>
+                {vacante.hiring_manager_email && (
+                  <a href={'mailto:' + vacante.hiring_manager_email} style={{ fontSize: 12, color: '#2563eb', display: 'block', marginTop: 2 }}>
+                    {vacante.hiring_manager_email}
+                  </a>
+                )}
+                {vacante.hiring_manager_telefono && (
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 1 }}>{vacante.hiring_manager_telefono}</div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

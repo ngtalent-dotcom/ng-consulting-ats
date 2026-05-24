@@ -17,6 +17,9 @@ function formDesdeVacante(v) {
     ciudad: v.ciudad || '',
     salarioMin: v.salario_min != null ? String(v.salario_min) : '',
     salarioMax: v.salario_max != null ? String(v.salario_max) : '',
+    hiringManager: v.hiring_manager || '',
+    hiringManagerEmail: v.hiring_manager_email || '',
+    hiringManagerTelefono: v.hiring_manager_telefono || '',
     descripcion: v.descripcion || '',
     requisitos: v.requisitos || '',
     estatus: v.estatus || 'Activa',
@@ -64,6 +67,9 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
         ciudad: form.ciudad.trim(),
         salario_min: form.salarioMin ? Number(form.salarioMin) : null,
         salario_max: form.salarioMax ? Number(form.salarioMax) : null,
+        hiring_manager: form.hiringManager.trim() || null,
+        hiring_manager_email: form.hiringManagerEmail.trim() || null,
+        hiring_manager_telefono: form.hiringManagerTelefono.trim() || null,
         descripcion: form.descripcion.trim() || null,
         requisitos: form.requisitos.trim() || null,
         estatus: form.estatus,
@@ -182,6 +188,35 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
             <div>
               <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Máximo (MXN)</div>
               <input type="number" placeholder="35000" value={form.salarioMax} onChange={e => set('salarioMax', e.target.value)} style={inp()} />
+            </div>
+          </div>
+        </div>
+
+        {/* Hiring Manager */}
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+            Hiring Manager
+            <span style={{ marginLeft: 8, fontSize: 11, background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: 10, fontWeight: 500 }}>
+              &#128274; Solo interno
+            </span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <input
+              type="text" placeholder="Nombre del contacto en el cliente"
+              value={form.hiringManager} onChange={e => set('hiringManager', e.target.value)}
+              style={inp()}
+            />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <input
+                type="email" placeholder="correo@empresa.com"
+                value={form.hiringManagerEmail} onChange={e => set('hiringManagerEmail', e.target.value)}
+                style={inp()}
+              />
+              <input
+                type="tel" placeholder="81 1234 5678"
+                value={form.hiringManagerTelefono} onChange={e => set('hiringManagerTelefono', e.target.value)}
+                style={inp()}
+              />
             </div>
           </div>
         </div>
