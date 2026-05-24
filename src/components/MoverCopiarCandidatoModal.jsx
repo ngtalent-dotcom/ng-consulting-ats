@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import Modal from './ui/Modal'
 import { getVacantesConCliente } from '../services/vacantesService'
 import { moverCandidato, copiarCandidato } from '../services/candidatosService'
@@ -16,18 +17,16 @@ export default function MoverCopiarCandidatoModal({ abierto, onCerrar, candidato
   const [vacanteSeleccionada, setVacanteSeleccionada] = useState(null)
   const [cargandoVacantes, setCargandoVacantes] = useState(true)
   const [ejecutando, setEjecutando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   useEffect(() => {
     if (!abierto) return
     setOperacion('mover')
     setBusquedaVacante('')
     setVacanteSeleccionada(null)
-    setErrorServidor(null)
     setCargandoVacantes(true)
     getVacantesConCliente(candidato.vacante_id)
       .then(setVacantes)
-      .catch(() => setErrorServidor('No se pudo cargar la lista de vacantes.'))
+      .catch(() => toast.error('No se pudo cargar la lista de vacantes.'))
       .finally(() => setCargandoVacantes(false))
   }, [abierto, candidato.vacante_id])
 
@@ -51,7 +50,6 @@ export default function MoverCopiarCandidatoModal({ abierto, onCerrar, candidato
   const handleConfirmar = async () => {
     if (!vacanteSeleccionada) return
     setEjecutando(true)
-    setErrorServidor(null)
     try {
       let resultado
       if (operacion === 'mover') {
@@ -59,10 +57,11 @@ export default function MoverCopiarCandidatoModal({ abierto, onCerrar, candidato
       } else {
         resultado = await copiarCandidato(candidato, vacanteSeleccionada.id)
       }
+      toast.success(operacion === 'mover' ? 'Candidato movido' : 'Candidato copiado')
       onExito(operacion, resultado, vacanteSeleccionada)
       onCerrar()
     } catch {
-      setErrorServidor('Ocurrió un error al procesar la operación. Intenta de nuevo.')
+      toast.error('Ocurrió un error al procesar la operación. Intenta de nuevo.')
     } finally {
       setEjecutando(false)
     }
@@ -202,13 +201,6 @@ export default function MoverCopiarCandidatoModal({ abierto, onCerrar, candidato
               El candidato original no se modifica.
             </>
           )}
-        </div>
-      )}
-
-      {/* Error */}
-      {errorServidor && (
-        <div style={{ padding: '10px 14px', borderRadius: 8, marginBottom: 16, background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: 13 }}>
-          {errorServidor}
         </div>
       )}
 

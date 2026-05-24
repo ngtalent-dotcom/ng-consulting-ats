@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { createCandidato, uploadCV } from '../services/candidatosService'
 import { registrarActividad } from '../services/actividadService'
 import Modal from './ui/Modal'
@@ -21,7 +22,6 @@ export default function NuevoCandidatoModal({ vacanteId, onClose, onCreado }) {
   const [form, setForm] = useState(vacioForm)
   const [errors, setErrors] = useState({})
   const [guardando, setGuardando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   const set = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -43,7 +43,6 @@ export default function NuevoCandidatoModal({ vacanteId, onClose, onCreado }) {
     if (Object.keys(e2).length > 0) { setErrors(e2); return }
 
     setGuardando(true)
-    setErrorServidor(null)
     try {
       let cvUrl = null
       if (form.cv) {
@@ -66,10 +65,11 @@ export default function NuevoCandidatoModal({ vacanteId, onClose, onCreado }) {
       await registrarActividad(nuevo.id, 'creacion', 'Candidato agregado al pipeline', { fuente: form.fuente || null })
       if (cvUrl) await registrarActividad(nuevo.id, 'cv', 'CV subido')
       if (onCreado) onCreado(nuevo)
+      toast.success('Candidato agregado')
       onClose()
     } catch (err) {
       console.error('Error al crear candidato:', err)
-      setErrorServidor('Ocurrió un error al guardar. Inténtalo de nuevo.')
+      toast.error('Ocurrió un error al guardar. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -77,12 +77,6 @@ export default function NuevoCandidatoModal({ vacanteId, onClose, onCreado }) {
 
   return (
     <Modal abierto titulo="Agregar candidato" onCerrar={onClose} ancho={520}>
-      {errorServidor && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
-          {errorServidor}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           <Field label="Nombre *" error={errors.nombre}>

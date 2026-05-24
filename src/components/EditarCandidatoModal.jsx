@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { updateCandidato } from '../services/candidatosService'
 import Modal from './ui/Modal'
 
@@ -20,7 +21,6 @@ export default function EditarCandidatoModal({ candidato, onClose, onActualizado
   })
   const [errors, setErrors] = useState({})
   const [guardando, setGuardando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   const set = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -41,7 +41,6 @@ export default function EditarCandidatoModal({ candidato, onClose, onActualizado
     if (Object.keys(e2).length > 0) { setErrors(e2); return }
 
     setGuardando(true)
-    setErrorServidor(null)
     try {
       const banderasArr = form.banderas_rojas
         .split('\n')
@@ -61,10 +60,11 @@ export default function EditarCandidatoModal({ candidato, onClose, onActualizado
         banderas_rojas: banderasArr.length > 0 ? banderasArr : null,
       })
       if (onActualizado) onActualizado(actualizado)
+      toast.success('Cambios guardados')
       onClose()
     } catch (err) {
       console.error('Error al actualizar candidato:', err)
-      setErrorServidor('Ocurrió un error al guardar. Inténtalo de nuevo.')
+      toast.error('Ocurrió un error al guardar. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -72,12 +72,6 @@ export default function EditarCandidatoModal({ candidato, onClose, onActualizado
 
   return (
     <Modal abierto titulo={'Editar candidato · ' + candidato.nombre} onCerrar={onClose} ancho={520}>
-      {errorServidor && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
-          {errorServidor}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           <Field label="Nombre *" error={errors.nombre}>

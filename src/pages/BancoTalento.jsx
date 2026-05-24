@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { getCandidatosEspontaneos, deleteCandidato } from '../services/candidatosService'
 import MoverCopiarCandidatoModal from '../components/MoverCopiarCandidatoModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
@@ -28,6 +29,7 @@ export default function BancoTalento() {
       setCandidatos(data)
     } catch (err) {
       console.error('Error cargando banco de talento:', err)
+      toast.error('Error al cargar el banco de talento')
     } finally {
       setCargando(false)
     }
@@ -46,8 +48,13 @@ export default function BancoTalento() {
 
   async function handleEliminar() {
     if (!confirmEliminar) return
-    await deleteCandidato(confirmEliminar.id, confirmEliminar.cv_url)
-    setCandidatos(prev => prev.filter(c => c.id !== confirmEliminar.id))
+    try {
+      await deleteCandidato(confirmEliminar.id, confirmEliminar.cv_url)
+      setCandidatos(prev => prev.filter(c => c.id !== confirmEliminar.id))
+      toast.success('Candidato eliminado')
+    } catch {
+      toast.error('Error al eliminar el candidato')
+    }
     setConfirmEliminar(null)
   }
 

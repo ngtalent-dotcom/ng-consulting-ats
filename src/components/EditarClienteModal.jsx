@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { updateCliente } from '../services/clientesService'
 import Modal from './ui/Modal'
 
@@ -14,7 +15,6 @@ export default function EditarClienteModal({ cliente, onClose, onActualizado }) 
   })
   const [errors, setErrors] = useState({})
   const [guardando, setGuardando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   const set = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -33,7 +33,6 @@ export default function EditarClienteModal({ cliente, onClose, onActualizado }) 
     if (Object.keys(e2).length > 0) { setErrors(e2); return }
 
     setGuardando(true)
-    setErrorServidor(null)
     try {
       const actualizado = await updateCliente(cliente.id, {
         nombre: form.nombre.trim(),
@@ -43,10 +42,11 @@ export default function EditarClienteModal({ cliente, onClose, onActualizado }) 
         telefono: form.telefono.trim() || null,
       })
       if (onActualizado) onActualizado(actualizado)
+      toast.success('Cliente actualizado')
       onClose()
     } catch (err) {
       console.error('Error al actualizar cliente:', err)
-      setErrorServidor('Ocurrió un error al guardar. Inténtalo de nuevo.')
+      toast.error('Ocurrió un error al guardar. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -54,12 +54,6 @@ export default function EditarClienteModal({ cliente, onClose, onActualizado }) 
 
   return (
     <Modal abierto titulo={'Editar cliente · ' + cliente.nombre} onCerrar={onClose} ancho={480}>
-      {errorServidor && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
-          {errorServidor}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Field label="Nombre de la empresa *" error={errors.nombre}>
           <input type="text" value={form.nombre}

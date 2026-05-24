@@ -106,6 +106,7 @@
     "semanaData", "fuenteData", "diasPromedio", "tasaConversion",
     "ResponsiveContainer", "CartesianGrid", "PieChart", "dataKey",
     "innerRadius", "outerRadius", "paddingAngle", "strokeDasharray",
-    "axisLine", "tickLine", "allowDecimals", "tickFormatter", "barSize", "maxBarSize"
+    "axisLine", "tickLine", "allowDecimals", "tickFormatter", "barSize", "maxBarSize",
+    "sonner", "Toaster"
   ]
 }

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { AuthProvider, useAuth } from './lib/AuthContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -38,6 +39,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Toaster richColors position="bottom-right" />
         <Routes>
           {/* Portales públicos — sin auth */}
           <Route path="/careers" element={<CareersList />} />

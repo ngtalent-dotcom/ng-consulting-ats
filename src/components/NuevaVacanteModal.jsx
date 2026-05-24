@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { createVacante } from '../services/vacantesService'
 import CompetenciasEditor from './prescreen/CompetenciasEditor'
 import RichTextEditor from './ui/RichTextEditor'
@@ -29,7 +30,6 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
   const [errors, setErrors] = useState({})
   const [guardado, setGuardado] = useState(false)
   const [guardando, setGuardando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   const set = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -54,7 +54,6 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
     if (Object.keys(e2).length > 0) { setErrors(e2); return }
 
     setGuardando(true)
-    setErrorServidor(null)
 
     try {
       const nuevaVacante = await createVacante({
@@ -82,7 +81,7 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
       setTimeout(() => onClose(), 1800)
     } catch (err) {
       console.error('Error al crear vacante:', err)
-      setErrorServidor('Ocurrió un error al guardar la vacante. Inténtalo de nuevo.')
+      toast.error('Ocurrió un error al guardar la vacante. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -118,13 +117,6 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
           </div>
           <button onClick={onClose} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', fontSize: 16, color: '#64748b' }}>&#x2715;</button>
         </div>
-
-        {/* Error servidor */}
-        {errorServidor && (
-          <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
-            {errorServidor}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 

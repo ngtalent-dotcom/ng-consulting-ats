@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { updateVacante } from '../services/vacantesService'
 import CompetenciasEditor from './prescreen/CompetenciasEditor'
 import Modal from './ui/Modal'
@@ -33,7 +34,6 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
   const [form, setForm] = useState(() => formDesdeVacante(vacante))
   const [errors, setErrors] = useState({})
   const [guardando, setGuardando] = useState(false)
-  const [errorServidor, setErrorServidor] = useState(null)
 
   const set = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -58,7 +58,6 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
     if (Object.keys(e2).length > 0) { setErrors(e2); return }
 
     setGuardando(true)
-    setErrorServidor(null)
     try {
       const actualizada = await updateVacante(vacante.id, {
         titulo: form.titulo.trim(),
@@ -78,10 +77,11 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
         prescreen_template: { competencias: form.competencias },
       })
       if (onActualizada) onActualizada(actualizada)
+      toast.success('Vacante actualizada')
       onClose()
     } catch (err) {
       console.error('Error al actualizar vacante:', err)
-      setErrorServidor('Ocurrió un error al guardar. Inténtalo de nuevo.')
+      toast.error('Ocurrió un error al guardar. Inténtalo de nuevo.')
     } finally {
       setGuardando(false)
     }
@@ -89,12 +89,6 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
 
   return (
     <Modal abierto titulo={'Editar vacante · ' + vacante.titulo} onCerrar={onClose} ancho={600}>
-      {errorServidor && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 8, padding: '10px 14px', marginBottom: 16, color: '#dc2626', fontSize: 13 }}>
-          {errorServidor}
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 
         {/* Título */}
