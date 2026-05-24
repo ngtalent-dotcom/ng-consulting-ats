@@ -14,6 +14,7 @@ import Portal from './pages/portal/Portal'
 import PortalVacante from './pages/portal/PortalVacante'
 import PlantillasCompetencias from './pages/herramientas/PlantillasCompetencias'
 import Levantamiento from './pages/herramientas/Levantamiento'
+import Cobro from './pages/herramientas/Cobro'
 import LevantamientoPublico from './pages/levantamiento/LevantamientoPublico'
 import './index.css'
 
@@ -58,6 +59,7 @@ function App() {
                   <Route path="/candidatos/:candidatoId" element={<Candidato />} />
                   <Route path="/herramientas/plantillas" element={<PlantillasCompetencias />} />
                   <Route path="/herramientas/levantamiento" element={<Levantamiento />} />
+                  <Route path="/herramientas/cobro" element={<Cobro />} />
                 </Routes>
               </Layout>
             </Privado>

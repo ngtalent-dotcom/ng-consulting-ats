@@ -8,6 +8,37 @@ import EditarCandidatoModal from '../components/EditarCandidatoModal'
 import MoverCopiarCandidatoModal from '../components/MoverCopiarCandidatoModal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { nivelLabel } from '../services/prescreenScoring'
+import { descargarPrescreenParaClaude } from '../services/exportService'
+
+function plantillasMensaje(nombre, vacanteTitulo, clienteNombre) {
+  return [
+    {
+      label: 'Siguiente etapa',
+      asunto: `Avance en tu proceso — ${vacanteTitulo}`,
+      cuerpo: `Hola ${nombre},\n\nEsperamos que te encuentres bien. Nos comunicamos para informarte que, tras revisar tu perfil, nos gustaría avanzar contigo a la siguiente etapa del proceso de selección para la posición de ${vacanteTitulo}${clienteNombre ? ` en ${clienteNombre}` : ''}.\n\nEn breve nos pondremos en contacto contigo para coordinar los detalles.\n\nMuchas gracias por tu tiempo e interés en esta oportunidad.\n\nSaludos cordiales,\nEquipo N&G Talent Consulting`,
+    },
+    {
+      label: 'Invitación a entrevista',
+      asunto: `Entrevista — ${vacanteTitulo}`,
+      cuerpo: `Hola ${nombre},\n\n¡Buenas noticias! Has avanzado al siguiente paso del proceso de selección para la posición de ${vacanteTitulo}${clienteNombre ? ` en ${clienteNombre}` : ''}.\n\nNos gustaría coordinar una entrevista con el equipo. ¿Cuál es tu disponibilidad esta semana o la próxima?\n\nPor favor responde con dos o tres opciones de horario y nos encargamos de agendar todo.\n\nSaludos cordiales,\nEquipo N&G Talent Consulting`,
+    },
+    {
+      label: 'No continuamos',
+      asunto: `Actualización de tu proceso — ${vacanteTitulo}`,
+      cuerpo: `Hola ${nombre},\n\nAgradecemos sinceramente el tiempo que dedicaste a participar en nuestro proceso de selección para la posición de ${vacanteTitulo}${clienteNombre ? ` en ${clienteNombre}` : ''}.\n\nDespués de evaluar cuidadosamente tu perfil, hemos decidido continuar con otros candidatos cuyo perfil se ajusta mejor a los requerimientos actuales. Esto no resta valor a tu trayectoria ni a tus habilidades.\n\nConservamos tu información y te consideraremos para oportunidades futuras que se alineen con tu perfil.\n\nMucho éxito en tu búsqueda.\n\nSaludos cordiales,\nEquipo N&G Talent Consulting`,
+    },
+    {
+      label: 'Seguimiento / Status',
+      asunto: `Actualización de tu proceso — ${vacanteTitulo}`,
+      cuerpo: `Hola ${nombre},\n\nEsperamos que estés bien. Te escribimos para mantenerte al tanto del avance en el proceso de selección para la posición de ${vacanteTitulo}.\n\n[Agrega tu actualización aquí]\n\nCualquier duda no dudes en contactarnos.\n\nSaludos cordiales,\nEquipo N&G Talent Consulting`,
+    },
+    {
+      label: 'Oferta de trabajo',
+      asunto: `Oferta de trabajo — ${vacanteTitulo}`,
+      cuerpo: `Hola ${nombre},\n\nNos da mucho gusto informarte que has sido seleccionado(a) para la posición de ${vacanteTitulo}${clienteNombre ? ` en ${clienteNombre}` : ''}.\n\nEn breve recibirás los detalles formales de la oferta para tu revisión. Por favor confírmanos si tienes disponibilidad para una llamada en los próximos días para hablar de los detalles.\n\n¡Felicidades y bienvenido(a) al equipo!\n\nSaludos cordiales,\nEquipo N&G Talent Consulting`,
+    },
+  ]
+}
 
 const etapaColors = {
   'Aplicó':             '#6366f1',
@@ -542,6 +573,15 @@ export default function Candidato() {
                 <button className="btn btn-secondary" onClick={() => setMostrarPrescreen(true)}>
                   &#128203; {candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0 ? 'Ver pre-screen' : 'Aplicar pre-screen'}
                 </button>
+                {candidato.prescreen_scores && Object.keys(candidato.prescreen_scores).length > 0 && (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => descargarPrescreenParaClaude(candidato, vacante)}
+                    title="Descarga el reporte de pre-screen con prompt listo para Claude"
+                  >
+                    ⬇ Pre-screen → Claude
+                  </button>
+                )}
                 <button
                   className="btn btn-secondary"
                   onClick={() => {
@@ -723,6 +763,26 @@ export default function Candidato() {
               </div>
             ) : (
               <div style={{ padding: '20px 22px' }}>
+                {/* Plantillas */}
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 7, textTransform: 'uppercase', letterSpacing: '.05em' }}>Plantillas rápidas</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {plantillasMensaje(candidato.nombre, vacante?.titulo || 'la vacante', cliente?.nombre || '').map(t => (
+                      <button
+                        key={t.label}
+                        type="button"
+                        onClick={() => { setMensajeAsunto(t.asunto); setMensajeCuerpo(t.cuerpo) }}
+                        style={{
+                          padding: '4px 10px', borderRadius: 20, border: '1px solid #e2e8f0',
+                          background: '#f8fafc', color: '#475569', fontSize: 12, fontWeight: 500,
+                          cursor: 'pointer', fontFamily: 'inherit',
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.05em' }}>Asunto</label>
                   <input
@@ -738,7 +798,7 @@ export default function Candidato() {
                     value={mensajeCuerpo}
                     onChange={e => setMensajeCuerpo(e.target.value)}
                     placeholder={`Hola ${candidato.nombre},\n\n`}
-                    rows={6}
+                    rows={7}
                     style={{ width: '100%', padding: '9px 11px', borderRadius: 7, border: '1.5px solid #e2e8f0', fontSize: 13, fontFamily: 'inherit', color: '#1e293b', outline: 'none', resize: 'vertical', lineHeight: 1.6, boxSizing: 'border-box' }}
                   />
                 </div>

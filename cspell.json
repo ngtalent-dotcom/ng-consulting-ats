@@ -81,6 +81,13 @@
     "moverArriba", "moverAbajo", "esNueva",
     "copiarEnlace", "copiado", "verDatos", "ModalVerDatos",
     "prestaciones", "escolaridad", "habilidades", "modalidad",
-    "planeacion", "inventarios"
+    "planeacion", "inventarios",
+    "exportService", "descargarLevantamientoParaClaude", "descargarPrescreenParaClaude",
+    "plantillasMensaje", "Cobro", "cobro",
+    "salarioMensual", "comisionPct", "comisionMonto", "salarioAnual",
+    "fechaFirma", "garantiaMeses", "fechaFinGarantia",
+    "entrevistadores", "firmante", "sumarMeses", "formatMonto",
+    "descargarTexto", "copiarTexto", "textoDocumento",
+    "TELECOMMUTE", "accentColor"
   ]
 }

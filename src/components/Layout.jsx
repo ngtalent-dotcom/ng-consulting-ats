@@ -10,6 +10,7 @@ const navItems = [
 const herramientasItems = [
   { path: '/herramientas/plantillas', icon: '📋', label: 'Plantillas de competencias' },
   { path: '/herramientas/levantamiento', icon: '📝', label: 'Levantamiento de perfil' },
+  { path: '/herramientas/cobro', icon: '💰', label: 'Generador de cobro' },
 ]
 
 export default function Layout({ children }) {

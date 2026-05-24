@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getLevantamientos, createLevantamiento, deleteLevantamiento } from '../../services/levantamientoService'
+import { descargarLevantamientoParaClaude } from '../../services/exportService'
 import ConfirmDialog from '../../components/ui/ConfirmDialog'
 
 const BASE_URL = window.location.origin
@@ -275,12 +276,22 @@ function ModalVerDatos({ lev, onClose }) {
       padding: '40px 16px', overflowY: 'auto',
     }}>
       <div style={{ background: 'white', borderRadius: 12, width: '100%', maxWidth: 640, boxShadow: '0 24px 80px rgba(0,0,0,0.2)', border: '1px solid #e2e8f0' }}>
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ flex: 1 }}>
             <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#1e293b' }}>{lev.titulo_vacante}</h2>
             {lev.cliente_nombre && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{lev.cliente_nombre}</div>}
           </div>
-          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8', lineHeight: 1 }}>×</button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => descargarLevantamientoParaClaude(lev)}
+              title="Descarga el levantamiento con un prompt listo para Claude"
+            >
+              ⬇ Descargar para Claude
+            </button>
+            <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#94a3b8', lineHeight: 1 }}>×</button>
+          </div>
         </div>
         <div style={{ padding: 24 }}>
           {campos.map(([label, valor]) => valor ? (
