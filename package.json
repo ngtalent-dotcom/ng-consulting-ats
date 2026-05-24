@@ -26,6 +26,7 @@
     "react-dom": "^19.2.6",
     "react-helmet-async": "^3.0.0",
     "react-router-dom": "^7.15.1",
+    "recharts": "^3.8.1",
     "tslib": "^2.8.1"
   },
   "devDependencies": {

@@ -93,6 +93,14 @@
     "textoEnvuelto", "formatFechaPDF", "formatMontoPDF",
     "AZUL_OSCURO", "didParseCell",
     "espontanea", "BancoTalento", "getCandidatosEspontaneos", "areaInteres", "area_interes",
-    "diasDesde", "esNuevo", "filtroArea", "areasInteres"
+    "diasDesde", "esNuevo", "filtroArea", "areasInteres",
+    "Metricas", "metricasService", "getDatosMetricas", "recharts", "Recharts",
+    "DonutChart", "BarChart", "KpiCard", "Tarjeta", "Vacio",
+    "PERIODOS", "FUENTE", "ETAPAS", "ETAPA",
+    "topVacantes", "vacantesActivas", "bancoPorArea", "funnelData",
+    "semanaData", "fuenteData", "diasPromedio", "tasaConversion",
+    "ResponsiveContainer", "CartesianGrid", "PieChart", "dataKey",
+    "innerRadius", "outerRadius", "paddingAngle", "strokeDasharray",
+    "axisLine", "tickLine", "allowDecimals", "tickFormatter", "barSize", "maxBarSize"
   ]
 }
