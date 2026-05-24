@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { updateVacante } from '../services/vacantesService'
 import CompetenciasEditor from './prescreen/CompetenciasEditor'
 import Modal from './ui/Modal'
+import RichTextEditor from './ui/RichTextEditor'
 
 const areas = ['Ventas', 'Operaciones', 'Finanzas', 'Recursos Humanos', 'Ingeniería', 'Marketing', 'Tecnología', 'Administración', 'Legal', 'Otro']
 const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador', 'Gerencial', 'Dirección']
@@ -223,14 +224,22 @@ export default function EditarVacanteModal({ vacante, onClose, onActualizada }) 
 
         {/* Descripción */}
         <Field label="Descripción del puesto">
-          <textarea value={form.descripcion} onChange={e => set('descripcion', e.target.value)}
-            rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }} />
+          <RichTextEditor
+            value={form.descripcion}
+            onChange={val => set('descripcion', val)}
+            placeholder="Describe el rol, responsabilidades y lo que ofrece la empresa..."
+            rows={4}
+          />
         </Field>
 
         {/* Requisitos */}
         <Field label="Requisitos del candidato">
-          <textarea value={form.requisitos} onChange={e => set('requisitos', e.target.value)}
-            rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }} />
+          <RichTextEditor
+            value={form.requisitos}
+            onChange={val => set('requisitos', val)}
+            placeholder="Experiencia, estudios, habilidades técnicas, etc."
+            rows={4}
+          />
         </Field>
 
         {/* Competencias pre-screen */}

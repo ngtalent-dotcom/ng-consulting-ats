@@ -168,16 +168,12 @@ export default function CareersDetail() {
 
           {/* Resumen */}
           <Section title="Sobre la posición">
-            <p style={{ color: '#475569', lineHeight: 1.7, fontSize: 14, whiteSpace: 'pre-line' }}>
-              {resumen}
-            </p>
+            <div className="rich-content" dangerouslySetInnerHTML={{ __html: resumen }} />
           </Section>
 
           {/* Requisitos */}
           <Section title="Perfil requerido">
-            <p style={{ color: '#475569', lineHeight: 1.7, fontSize: 14, whiteSpace: 'pre-line' }}>
-              {requisitosTexto}
-            </p>
+            <div className="rich-content" dangerouslySetInnerHTML={{ __html: requisitosTexto }} />
           </Section>
 
           {/* Ofrecemos — NUNCA mostrar salarios aqui */}

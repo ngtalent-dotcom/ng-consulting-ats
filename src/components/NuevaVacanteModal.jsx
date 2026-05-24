@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createVacante } from '../services/vacantesService'
 import CompetenciasEditor from './prescreen/CompetenciasEditor'
+import RichTextEditor from './ui/RichTextEditor'
 
 const areas = ['Ventas', 'Operaciones', 'Finanzas', 'Recursos Humanos', 'Ingeniería', 'Marketing', 'Tecnología', 'Administración', 'Legal', 'Otro']
 const niveles = ['Practicante', 'Junior', 'Semi-Senior', 'Senior', 'Coordinador', 'Gerencial', 'Dirección']
@@ -242,19 +243,21 @@ export default function NuevaVacanteModal({ clienteId, clienteNombre, onClose, o
 
           {/* Descripción */}
           <Field label="Descripción del puesto">
-            <textarea
-              placeholder="Describe brevemente el rol, responsabilidades principales y lo que ofrece la empresa..."
-              value={form.descripcion} onChange={e => set('descripcion', e.target.value)}
-              rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
+            <RichTextEditor
+              value={form.descripcion}
+              onChange={val => set('descripcion', val)}
+              placeholder="Describe el rol, responsabilidades y lo que ofrece la empresa..."
+              rows={4}
             />
           </Field>
 
           {/* Requisitos */}
           <Field label="Requisitos del candidato">
-            <textarea
+            <RichTextEditor
+              value={form.requisitos}
+              onChange={val => set('requisitos', val)}
               placeholder="Experiencia, estudios, habilidades técnicas, etc."
-              value={form.requisitos} onChange={e => set('requisitos', e.target.value)}
-              rows={3} style={{ ...inp(), resize: 'vertical', lineHeight: 1.6 }}
+              rows={4}
             />
           </Field>
 
