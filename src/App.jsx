@@ -11,6 +11,7 @@ import CareersList from './pages/careers/CareersList'
 import CareersDetail from './pages/careers/CareersDetail'
 import CareersApply from './pages/careers/CareersApply'
 import Portal from './pages/portal/Portal'
+import PortalVacante from './pages/portal/PortalVacante'
 import './index.css'
 
 function Privado({ children }) {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/careers/:vacanteId" element={<CareersDetail />} />
           <Route path="/careers/:vacanteId/apply" element={<CareersApply />} />
           <Route path="/portal/:token" element={<Portal />} />
+          <Route path="/portal-vacante/:token" element={<PortalVacante />} />
 
           {/* Login */}
           <Route path="/login" element={<Login />} />

@@ -52,7 +52,7 @@
     "dnd", "droppable", "draggable", "kanban",
     "Kanban", "Rechazado", "rechazados",
     "overlayColor", "backdropFilter",
-    "PortalLayout", "EtapaBadge", "ScoreStars",
+    "PortalLayout", "PortalVacante", "EtapaBadge", "ScoreStars",
     "regenerarTokenPortal", "copiandoId", "handleCompartirPortal",
     "hiringManager", "hiringManagerEmail", "hiringManagerTelefono",
     "Hiring", "Manager",

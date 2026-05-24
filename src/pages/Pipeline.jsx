@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, useDraggable, useDroppable } from '@dnd-kit/core'
-import { getVacanteById } from '../services/vacantesService'
+import { getVacanteById, regenerarTokenVacante } from '../services/vacantesService'
 import { getCandidatosByVacante, updateEtapaCandidato } from '../services/candidatosService'
 import { registrarActividad } from '../services/actividadService'
 import DescargarTemplateBtn from '../components/adjuntos/DescargarTemplateBtn'
@@ -136,6 +136,7 @@ export default function Pipeline() {
   const [filtroFuente, setFiltroFuente] = useState('')
   const [filtroDecision, setFiltroDecision] = useState('')
   const [activeId, setActiveId] = useState(null)
+  const [copiandoPortal, setCopiandoPortal] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -224,6 +225,25 @@ export default function Pipeline() {
 
   const limpiarFiltros = () => { setFiltroTexto(''); setFiltroFuente(''); setFiltroDecision('') }
 
+  const handleCompartirVacante = async () => {
+    setCopiandoPortal(true)
+    try {
+      let token = vacante.portal_token
+      if (!token) token = await regenerarTokenVacante(vacante.id)
+      const url = window.location.origin + '/portal-vacante/' + token
+      try {
+        await navigator.clipboard.writeText(url)
+      } catch {
+        window.prompt('Copia este enlace para el hiring manager:', url)
+      }
+      setTimeout(() => setCopiandoPortal(false), 2500)
+    } catch (err) {
+      console.error('Error al generar enlace del portal:', err)
+      alert('No se pudo generar el enlace. Verifica que la migración fue aplicada.')
+      setCopiandoPortal(false)
+    }
+  }
+
   return (
     <>
       <div className="page-header">
@@ -242,6 +262,20 @@ export default function Pipeline() {
           <div className="page-title">Pipeline &middot; {vacante.titulo}</div>
         </div>
         <div className="header-actions">
+          <button
+            onClick={handleCompartirVacante}
+            disabled={copiandoPortal}
+            style={{
+              padding: '8px 14px', borderRadius: 8, border: '1.5px solid',
+              borderColor: copiandoPortal ? '#6ee7b7' : '#e2e8f0',
+              background: copiandoPortal ? '#d1fae5' : 'white',
+              color: copiandoPortal ? '#065f46' : '#475569',
+              fontSize: 13, fontWeight: 600, cursor: copiandoPortal ? 'default' : 'pointer',
+              transition: 'all 0.2s',
+            }}
+          >
+            {copiandoPortal ? '✓ Enlace copiado' : '🔗 Portal HM'}
+          </button>
           <DescargarTemplateBtn cliente={cliente?.nombre || ''} puesto={vacante.titulo || ''} />
           <div className="toggle-group">
             <button

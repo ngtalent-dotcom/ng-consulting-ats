@@ -88,3 +88,16 @@ export async function deleteVacante(id) {
     .eq('id', id)
   if (error) throw error
 }
+
+// Regenerar token de portal por vacante (hiring manager)
+export async function regenerarTokenVacante(vacanteId) {
+  const nuevoToken = crypto.randomUUID()
+  const { data, error } = await supabase
+    .from('vacantes')
+    .update({ portal_token: nuevoToken })
+    .eq('id', vacanteId)
+    .select('portal_token')
+    .single()
+  if (error) throw error
+  return data.portal_token
+}
