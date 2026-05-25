@@ -20,6 +20,7 @@ import Metricas from './pages/herramientas/Metricas'
 import LevantamientoPublico from './pages/levantamiento/LevantamientoPublico'
 import CareersApplyEspontanea from './pages/careers/CareersApplyEspontanea'
 import BancoTalento from './pages/BancoTalento'
+import Landing from './pages/Landing'
 import './index.css'
 
 function Privado({ children }) {
@@ -53,8 +54,8 @@ function App() {
           {/* Login */}
           <Route path="/login" element={<Login />} />
 
-          {/* Temporal hasta que exista la landing */}
-          <Route path="/" element={<Navigate to="/app" replace />} />
+          {/* Landing page pública */}
+          <Route path="/" element={<Landing />} />
 
           {/* ATS interno — requiere sesión */}
           <Route path="/app/*" element={

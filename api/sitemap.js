@@ -22,7 +22,8 @@ export default async function handler(req, res) {
   const base = process.env.SITE_URL || `https://${process.env.VERCEL_URL}` || 'https://ng-consulting-ats.vercel.app'
 
   const urls = [
-    `<url><loc>${base}/careers</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`,
+    `<url><loc>${base}/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>`,
+    `<url><loc>${base}/careers</loc><changefreq>daily</changefreq><priority>0.9</priority></url>`,
     ...vacantes.map(v => {
       const fecha = v.created_at ? v.created_at.split('T')[0] : ''
       return `<url><loc>${base}/careers/${v.id}</loc>${fecha ? `<lastmod>${fecha}</lastmod>` : ''}<changefreq>weekly</changefreq><priority>0.8</priority></url>`
