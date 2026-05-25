@@ -81,14 +81,24 @@ function CampoForm({ label, type = 'text', value, onChange, required, placeholde
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false)
   const [menuMovil, setMenuMovil] = useState(false)
+  const [mostrarSubir, setMostrarSubir] = useState(false)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const [form, setForm] = useState({ nombre: '', empresa: '', correo: '', telefono: '', mensaje: '' })
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 48)
+      setMostrarSubir(window.scrollY > 500)
+    }
+    const onResize = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
 
   function irA(id) {
@@ -139,32 +149,74 @@ export default function Landing() {
             N&amp;G Talent
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-            {[['servicios', 'Servicios'], ['nosotros', 'Nosotros'], ['contacto', 'Contacto']].map(([id, label]) => (
-              <button key={id} onClick={() => irA(id)} style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
-                color: scrolled ? '#475569' : 'rgba(255,255,255,0.8)',
-                transition: 'color 0.15s',
-                padding: '4px 0',
+          {!isMobile ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+              {[['servicios', 'Servicios'], ['nosotros', 'Nosotros'], ['contacto', 'Contacto']].map(([id, label]) => (
+                <button key={id} onClick={() => irA(id)} style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
+                  color: scrolled ? '#475569' : 'rgba(255,255,255,0.8)',
+                  transition: 'color 0.15s',
+                  padding: '4px 0',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = scrolled ? '#1e3a5f' : 'white' }}
+                onMouseLeave={e => { e.currentTarget.style.color = scrolled ? '#475569' : 'rgba(255,255,255,0.8)' }}
+                >
+                  {label}
+                </button>
+              ))}
+              <a href="/careers" style={{
+                padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 700,
+                background: scrolled ? '#1e3a5f' : 'rgba(255,255,255,0.12)',
+                border: '1.5px solid ' + (scrolled ? '#1e3a5f' : 'rgba(255,255,255,0.35)'),
+                color: 'white', textDecoration: 'none', transition: 'all 0.15s', whiteSpace: 'nowrap',
+              }}>
+                Ver vacantes →
+              </a>
+            </div>
+          ) : (
+            <button
+              onClick={() => setMenuMovil(m => !m)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: '8px',
+                color: scrolled ? '#1e3a5f' : 'white', fontSize: 24, lineHeight: 1,
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = scrolled ? '#1e3a5f' : 'white' }}
-              onMouseLeave={e => { e.currentTarget.style.color = scrolled ? '#475569' : 'rgba(255,255,255,0.8)' }}
-              >
-                {label}
-              </button>
-            ))}
-            <a href="/careers" style={{
-              padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 700,
-              background: scrolled ? '#1e3a5f' : 'rgba(255,255,255,0.12)',
-              border: '1.5px solid ' + (scrolled ? '#1e3a5f' : 'rgba(255,255,255,0.35)'),
-              color: 'white', textDecoration: 'none', transition: 'all 0.15s', whiteSpace: 'nowrap',
-            }}>
-              Ver vacantes →
-            </a>
-          </div>
+              aria-label="Menú"
+            >
+              {menuMovil ? '✕' : '☰'}
+            </button>
+          )}
         </div>
       </nav>
+
+      {isMobile && menuMovil && (
+        <div style={{
+          position: 'fixed', top: 64, left: 0, right: 0, zIndex: 190,
+          background: scrolled ? 'white' : '#0f2640',
+          borderBottom: '1px solid ' + (scrolled ? '#e2e8f0' : 'rgba(255,255,255,0.1)'),
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+        }}>
+          {[['servicios', 'Servicios'], ['nosotros', 'Nosotros'], ['contacto', 'Contacto']].map(([id, label]) => (
+            <button key={id} onClick={() => irA(id)} style={{
+              display: 'block', width: '100%', textAlign: 'left',
+              padding: '16px 24px', border: 'none',
+              background: 'none', cursor: 'pointer',
+              fontSize: 15, fontWeight: 500, fontFamily: 'inherit',
+              color: scrolled ? '#334155' : 'rgba(255,255,255,0.85)',
+              borderBottom: '1px solid ' + (scrolled ? '#f1f5f9' : 'rgba(255,255,255,0.07)'),
+            }}>
+              {label}
+            </button>
+          ))}
+          <a href="/careers" style={{
+            display: 'block', padding: '16px 24px',
+            fontSize: 15, fontWeight: 700,
+            color: '#0ea5e9', textDecoration: 'none',
+          }}>
+            Ver vacantes →
+          </a>
+        </div>
+      )}
 
       {/* ── HERO ── */}
       <section style={{
@@ -184,7 +236,7 @@ export default function Landing() {
             Monterrey · Noreste de México
           </div>
 
-          <h1 style={{ fontSize: 54, fontWeight: 900, color: 'white', lineHeight: 1.12, marginBottom: 24, letterSpacing: '-1.5px' }}>
+          <h1 style={{ fontSize: isMobile ? 34 : 54, fontWeight: 900, color: 'white', lineHeight: 1.12, marginBottom: 24, letterSpacing: isMobile ? '-0.5px' : '-1.5px' }}>
             El socio de reclutamiento que su empresa merece
           </h1>
 
@@ -192,13 +244,14 @@ export default function Landing() {
             Conectamos a empresas líderes del noreste de México con el talento que realmente genera impacto. Proceso ágil, criterio profesional y garantía de resultados.
           </p>
 
-          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row', padding: isMobile ? '0 8px' : 0 }}>
             <button onClick={() => irA('contacto')} style={{
               padding: '15px 36px', borderRadius: 10, border: 'none',
               background: 'white', color: '#1e3a5f',
               fontSize: 15, fontWeight: 800, cursor: 'pointer',
               boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
               transition: 'transform 0.15s, box-shadow 0.15s',
+              width: isMobile ? '100%' : 'auto',
             }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.3)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.25)' }}
@@ -210,8 +263,9 @@ export default function Landing() {
               border: '2px solid rgba(255,255,255,0.35)',
               background: 'transparent', color: 'white',
               fontSize: 15, fontWeight: 700, textDecoration: 'none',
-              display: 'inline-flex', alignItems: 'center',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'border-color 0.15s',
+              width: isMobile ? '100%' : 'auto',
             }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.7)' }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)' }}
@@ -250,7 +304,7 @@ export default function Landing() {
 
       {/* ── POR QUÉ N&G ── */}
       <section style={{ padding: '100px 24px', background: '#f8fafc' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 72, alignItems: 'center' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(380px, 100%), 1fr))', gap: isMobile ? 48 : 72, alignItems: 'center' }}>
           <div>
             <div style={tagStyle}>Por qué N&amp;G</div>
             <h2 style={{ ...h2Style, textAlign: 'left', marginBottom: 24 }}>No cerramos vacantes.<br />Construimos equipos.</h2>
@@ -397,6 +451,27 @@ export default function Landing() {
           </a>
         </div>
       </footer>
+
+      {mostrarSubir && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{
+            position: 'fixed', bottom: 28, right: 28, zIndex: 300,
+            width: 46, height: 46, borderRadius: '50%',
+            background: '#1e3a5f', color: 'white',
+            border: 'none', cursor: 'pointer', fontSize: 20,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'background 0.15s, transform 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#1e3a5f'; e.currentTarget.style.transform = 'none' }}
+          aria-label="Volver arriba"
+          title="Volver arriba"
+        >
+          ↑
+        </button>
+      )}
     </>
   )
 }

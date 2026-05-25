@@ -39,6 +39,9 @@ export default function CareersLayout({ children }) {
         </div>
 
         <div className="careers-nav-contacto">
+          <a href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontWeight: 500 }}>
+            ← Inicio
+          </a>
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
             &#128205; Monterrey, NL
           </span>
