@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { Analytics } from '@vercel/analytics/react'
 import { AuthProvider, useAuth } from './lib/AuthContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -41,6 +42,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Toaster richColors position="bottom-right" />
+        <Analytics />
         <Routes>
           {/* Portales públicos — sin auth */}
           <Route path="/careers" element={<CareersList />} />
